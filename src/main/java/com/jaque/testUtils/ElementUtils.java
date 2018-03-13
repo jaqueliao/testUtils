@@ -27,7 +27,6 @@ public class ElementUtils {
      * @param element 元素
      * @return
      * @throws IOException 
-     * @throws Exception
      */
     public static File captureElement(WebElement element) throws IOException{  
         WrapsDriver wrapsDriver = (WrapsDriver) element;  

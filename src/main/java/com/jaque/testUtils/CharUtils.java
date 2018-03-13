@@ -19,7 +19,7 @@ public class CharUtils {
 	}
 	/**
 	 * 获取随机姓名，名字长度1或2
-	 * @return
+	 * @return 返回随机姓名
 	 */
 	public static String getRandomName_cn() {
 	    Random random=new Random();  
@@ -27,9 +27,9 @@ public class CharUtils {
 		return getRandomName_cn(firstNameLength+1);
 	}
 	/**
-	 * 获取随机姓名
+	 * 获取固定长度的随机姓名
 	 * @param firstNameLength 名字（不含姓）的长度
-	 * @return
+	 * @return 返回随机姓名
 	 */
 	public static String getRandomName_cn(int firstNameLength) {
 	    Random random=new Random();  
@@ -39,10 +39,10 @@ public class CharUtils {
 		return sb.toString()+getRandomString(firstNameLength,firstName_simple);
 	}
 	/**
-	 * 获取随机姓名
+	 * 获取固定长度名字，复姓或单姓的随机姓名
 	 * @param firstNameLength 名字（不含姓）的长度
 	 * @param isCompoundSurnName 是否是复姓
-	 * @return
+	 * @return 返回随机姓名
 	 */
 	public static String getRandomName_cn(int firstNameLength,boolean isCompoundSurnName){
 		
@@ -61,7 +61,7 @@ public class CharUtils {
 	/**
 	 * 获取固定长度的随机英文字母字符串
 	 * @param length 长度
-	 * @return
+	 * @return 返回字符串
 	 */
 	public static String getRandomString_en(int length){
 		//定义一个字符串（A-Z，a-z，0-9）即62位；
@@ -72,7 +72,7 @@ public class CharUtils {
 	 * 获取固定长度的随机字符串
 	 * @param length 长度
 	 * @param strings 随机字符串范围
-	 * @return
+	 * @return 返回定长字符串
 	 */
 	public static String getRandomString(int length , String strings){
 		//定义一个字符串（A-Z，a-z，0-9）即62位；

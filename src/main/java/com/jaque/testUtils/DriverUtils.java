@@ -17,8 +17,8 @@ public class DriverUtils {
 	/**
 	 * 返回解码后的url文本
 	 * @param driver
-	 * @return
-	 * @throws UnsupportedEncodingException
+	 * @return URL
+	 * @throws UnsupportedEncodingException 不支持的解码异常
 	 */
 	public static String getUrl(WebDriver driver) throws UnsupportedEncodingException {
 		return URLDecoder.decode(driver.getCurrentUrl(), "UTF-8");	

@@ -9,6 +9,8 @@ import java.io.File;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
@@ -22,7 +24,7 @@ public class TestUtils {
 	/**
 	 * 获取固定长度的随机字符串
 	 * @param length 长度
-	 * @return
+	 * @return 但会字符串
 	 */
 	public static String getRandomString(int length){
 		//定义一个字符串（A-Z，a-z，0-9）即62位；
@@ -42,10 +44,8 @@ public class TestUtils {
 	    return sb.toString();
 	}
 	/**
-	 * 获取范围内随机数
-	 * @param min 最小值
-	 * @param max 最大值
-	 * @return
+	 * 获取随机手机号
+	 * @return	返回手机号
 	 */
 	public static String getRandomPhone() {
 
@@ -64,10 +64,10 @@ public class TestUtils {
 	}
     /**
      * 判断正在执行用例的服务器是否是jenkin部署的服务器
-     * @return
-     * @throws Exception
+     * @return 返回是否是jenkins服务器
+     * @throws SocketException 网络信息获取异常
      */
-    public static boolean isTestServer() throws Exception {
+    public static boolean isTestServer() throws SocketException {
     	String serverIp = PropertyPraser.getProperty("jenkinsServerIp");
     	Enumeration<NetworkInterface> allNetInterfaces = NetworkInterface.getNetworkInterfaces();
 		InetAddress ip = null;
@@ -88,7 +88,7 @@ public class TestUtils {
 
 	/**
 	 * 以年月日时分秒毫秒的格式获取当前时间的字符串
-	 * @return
+	 * @return 返回时间字符串
 	 */
 	public static String getTimeStamp() {
 		Date currentTime = new Date();
@@ -98,7 +98,7 @@ public class TestUtils {
 	}
 	/**
 	 * 将整个屏幕截图保存为指定文件
-	 * @param filePath
+	 * @param filePath 截图后的保存路径
 	 */
 	public static void takeScreenSnap(String filePath) {
 
@@ -114,10 +114,10 @@ public class TestUtils {
 	
 	/**
 	 * 获取工作目录
-	 * @return
-	 * @throws Exception
+	 * @return 返回工作目录
+	 * @throws URISyntaxException 异常
 	 */
-	public static String getWorkPath() throws Exception {
+	public static String getWorkPath() throws URISyntaxException {
 		String workPath = TestUtils.class.getClassLoader().getResource("").toURI().getPath();
 		return workPath;
 	}
