@@ -11,10 +11,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
-import com.jaque.testUtils.TestUtils;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 /**
  * 
  * @author JaqueLiao
@@ -24,7 +21,7 @@ public class DriverFactory {
 	
 	public static void main(String[] args) throws URISyntaxException {
 		
-		DriverFactory DriverFactory = new DriverFactory("ff");
+		DriverFactory DriverFactory = new DriverFactory("ie",600,800);
 		DriverFactory.setUrl("http://www.baidu.com");
 		DriverFactory.setDisableImage();
 		//DriverFactory.setDeviceEmulateOptions(360, 640, 3.0, "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19");
@@ -53,16 +50,26 @@ public class DriverFactory {
 	}
 	/**
 	 * 构造方法
-	 * @param browser 浏览器名称 谷歌浏览器--chrome/gc/googleChrome；火狐浏览器-firefox/ff/fire；
+	 * @param browser 浏览器名称 谷歌浏览器--chrome/gc/googleChrome；火狐浏览器-firefox/ff/fire；IE浏览器-IE/Iexplore/IEexplore/InternetExplorer,ie暂未实现不不显示图片功能
 	 * 
 	 */
 	public DriverFactory(String browser) {
 		this.browser = browser;
 	}
+	/**
+	 * 构造方法
+	 * @param browser 浏览器名称 谷歌浏览器--chrome/gc/googleChrome；火狐浏览器-firefox/ff/fire；IE浏览器-IE/Iexplore/IEexplore/InternetExplorer,ie暂未实现不不显示图片功能
+	 * @param browserWidth 浏览器宽度
+	 * @param browserHeight	浏览器高度
+	 */
 	public DriverFactory(String browser,int browserWidth,int browserHeight) {
 		this.browser = browser;
 		this.setBrowserDimension(browserWidth, browserHeight);
 	}
+	/**
+	 * 通过DriverFactory取得driver，可设置使用哪个浏览器，默认为chrome
+	 * @return 返回浏览器驱动
+	 */
 	public WebDriver getDriver() {
 		switch(browser.toLowerCase()) {
 		//谷歌浏览器
@@ -79,7 +86,14 @@ public class DriverFactory {
 			this.initFireFox();break;
 		case "fire" :
 			this.initFireFox();break;
-
+		case "ie" :
+			this.initIexplore();break;
+		case "iexplore" :
+			this.initIexplore();break;
+		case "ieexplore" :
+			this.initIexplore();break;
+		case "internetexplorer" :
+			this.initIexplore();break;
 
 		//默认使用谷歌浏览器
 		default : 
@@ -87,6 +101,39 @@ public class DriverFactory {
 		}
 		return driver;
 	}
+	/**
+	 * 初始化ie
+	 */
+	private void initIexplore() {
+		
+		if(!showImageFlag) {
+			//TODO
+		}
+		
+		if(!(null == driverPath)) {
+			System.setProperty("webdriver.firefox.bin", this.driverPath);
+		}
+		try {
+			driver = new InternetExplorerDriver();
+		}catch (IllegalStateException e) {
+			System.out.println("未找到浏览器驱动,其路径为："+this.driverPath+"。"
+					+ "\n请将浏览器驱动放在path环境变量的某个路径下，或者使用”setDriverPath()“方法设置正确的浏览器驱动路径！\n");
+			e.printStackTrace();
+		}
+		
+		
+		this.initBrowser();
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	/**
+	 * 初始化chrome
+	 */
 	private void initChrome() {
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--disable-infobars");
@@ -123,6 +170,9 @@ public class DriverFactory {
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * 初始化火狐
+	 */
 	private void initFireFox() {
 		
 		FirefoxOptions fo = new FirefoxOptions();
@@ -149,7 +199,10 @@ public class DriverFactory {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * 浏览器公用初始化动作
+	 */
 	private void initBrowser() {
 		if(!(0== globalTimeOut)){
 			driver.manage().timeouts().implicitlyWait(this.globalTimeOut, TimeUnit.SECONDS);
@@ -176,7 +229,13 @@ public class DriverFactory {
 	public void setShowImage() {
 		this.showImageFlag = true;
 	}
-	
+	/**
+	 * 设置浏览器模拟移动设备的参数
+	 * @param deviceWidth 设备宽度
+	 * @param deviceHeight 设备高度
+	 * @param devicePixelRatio 设备PixelRatio
+	 * @param userAgent 设备userAgent
+	 */
 	public void setDeviceEmulateOptions(int deviceWidth,int deviceHeight,double devicePixelRatio, String userAgent) {
 		this.deviceEmulateFlag = true;
 		this.deviceWidth = deviceWidth;
@@ -184,26 +243,47 @@ public class DriverFactory {
 		this.devicePixelRatio = devicePixelRatio;
 		this.userAgent = userAgent;
 	}
-	
+	/**
+	 * 设置浏览器模拟移动设备的参数
+	 * @param deviceWidth 设备宽度
+	 * @param deviceHeight 设备高度
+	 * @param devicePixelRatio 设备PixelRatio
+	 */
 	public void setDeviceMetrics(int deviceWidth,int deviceHeight,double devicePixelRatio) {
 		String initUserAgent = "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19";
 		this.setDeviceEmulateOptions(deviceWidth, deviceHeight,devicePixelRatio , null == this.userAgent ? initUserAgent : this.userAgent);
 	}
-	
+	/**
+	 * 设置浏览器模拟移动设备的参数
+	 * @param deviceWidth 设备宽度
+	 * @param deviceHeight 设备高度
+	 */
 	public void setDeviceMetrics(int deviceWidth,int deviceHeight) {
 		this.setDeviceMetrics(deviceWidth, deviceHeight, 1.0);
 	}
-	
+	/**
+	 * 设置浏览器超时时间
+	 * @param globalTimeOut	全局超时时间
+	 * @param pageLoadTimeOut 页面加载超时时间
+	 */
 	public void setTimeOut(int globalTimeOut,int pageLoadTimeOut) {
 		this.globalTimeOut = globalTimeOut;
 		this.pageLoadTimeOut = pageLoadTimeOut;
 	}
-	
+	/**
+	 * 设置浏览器启动时大小
+	 * @param browserDimension 大小
+	 */
 	public void setBrowserDimension(Dimension browserDimension) {
 		this.browserWidth = browserDimension.width;
 		this.browserHeight = browserDimension.height;
 		this.browserDimension = browserDimension;
 	}
+	/**
+	 * 设置浏览器启动时大小
+	 * @param browserWidth 宽度
+	 * @param browserHeight 高度
+	 */
 	public void setBrowserDimension(int browserWidth,int browserHeight) {
 		this.browserWidth = browserWidth;
 		this.browserHeight = browserHeight;
@@ -242,7 +322,7 @@ public class DriverFactory {
 	public int getPageLoadTimeOut() {
 		return pageLoadTimeOut;
 	}
-
+	
 	public void setPageLoadTimeOut(int pageLoadTimeOut) {
 		this.pageLoadTimeOut = pageLoadTimeOut;
 	}
@@ -266,7 +346,11 @@ public class DriverFactory {
 	public String getBrowser() {
 		return browser;
 	}
-
+	
+	/**
+	 * 设置浏览器 
+	 * @param browser 浏览器名称 谷歌浏览器--chrome/gc/googleChrome；火狐浏览器-firefox/ff/fire；IE浏览器-IE/Iexplore/IEexplore/InternetExplorer,ie暂未实现不不显示图片功能
+	 */
 	public void setBrowser(String browser) {
 		this.browser = browser;
 	}
@@ -283,6 +367,10 @@ public class DriverFactory {
 		return driverPath;
 	}
 
+	/**
+	 * 设置浏览器驱动路径
+	 * @param driverPath 路径
+	 */
 	public void setDriverPath(String driverPath) {
 		this.driverPath = driverPath;
 	}

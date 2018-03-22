@@ -136,9 +136,15 @@ public class ElementUtils {
      * 判断元素是否出现
      * @param driver
      * @param by
+     * @return 
      */
-    public static void isElementPresent(WebDriver driver,By by) {
-    	//TODO 待完成
+    public static boolean isElementPresent(WebDriver driver,By by) {
+    	try {
+    		driver.findElement(by);
+    	}catch(Exception e) {
+    		return false;
+    	}
+		return true;
     }
     @Test  
     public void testCaptureElement() throws IOException{  
