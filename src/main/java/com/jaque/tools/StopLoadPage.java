@@ -1,4 +1,4 @@
-package tools;
+package com.jaque.tools;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
