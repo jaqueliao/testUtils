@@ -12,6 +12,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.Reporter;
 
+import com.jaque.tools.StopLoadPage;
+
 public class DriverUtils {
 	
 	/**
@@ -111,4 +113,12 @@ public class DriverUtils {
     	log(driver);
     }
 
+    /**
+     * 设置下一个页面自动停止加载
+     * @param driver 浏览器驱动
+     * @param sec 多少秒后停止加载
+     */
+    public static void setNextLoadTimeOut(WebDriver driver,int sec) {
+		new StopLoadPage(driver,sec).start();
+    }
 }
