@@ -12,6 +12,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.opera.OperaDriver;
 /**
  * 
  * @author JaqueLiao
@@ -86,6 +87,10 @@ public class DriverFactory {
 			this.initFireFox();break;
 		case "fire" :
 			this.initFireFox();break;
+		//opera浏览器
+		case "opera" :
+			this.initOpera();break;
+		//IE浏览器
 		case "ie" :
 			this.initIexplore();break;
 		case "iexplore" :
@@ -102,6 +107,31 @@ public class DriverFactory {
 		return driver;
 	}
 	/**
+	 * 初始化opera
+	 */
+	private void initOpera() {
+		if(!showImageFlag) {
+		}
+		if(deviceEmulateFlag) {
+		}
+		if(!(null == driverPath)) {
+			System.setProperty("webdriver.opera.driver", this.driverPath);
+		}
+		try {
+			driver = new OperaDriver();
+		}catch (IllegalStateException e) {
+			System.out.println("未找到浏览器驱动,其路径为："+this.driverPath+"。"
+					+ "\n请将浏览器驱动放在path环境变量的某个路径下，或者使用”setDriverPath()“方法设置正确的浏览器驱动路径！");
+		}
+		this.initBrowser();
+        
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}		
+	}
+	/**
 	 * 初始化ie
 	 */
 	private void initIexplore() {
@@ -111,7 +141,7 @@ public class DriverFactory {
 		}
 		
 		if(!(null == driverPath)) {
-			System.setProperty("webdriver.firefox.bin", this.driverPath);
+			System.setProperty("webdriver.internetExplorer.bin", this.driverPath);
 		}
 		try {
 			driver = new InternetExplorerDriver();

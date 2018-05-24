@@ -13,7 +13,23 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+<build>
 
+<defaultGoal>compile</defaultGoal>
+<pluginManagement>
+<plugins> 
+<plugin> 
+<groupId>org.apache.maven.plugins</groupId> 
+<artifactId>maven-compiler-plugin</artifactId> 
+<configuration> 
+<source>1.7</source> 
+<target>1.7</target> 
+</configuration> 
+</plugin>
+</plugins>
+</pluginManagement>
+  </build>
+  
   <dependencies>
     <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
 	<dependency>
@@ -44,5 +60,10 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+ 	  <groupId>org.apache.httpcomponents.client5</groupId>
+ 	  <artifactId>httpclient5</artifactId>
+ 	  <version>5.0-beta1</version>
+	</dependency>
   </dependencies>
 </project>
