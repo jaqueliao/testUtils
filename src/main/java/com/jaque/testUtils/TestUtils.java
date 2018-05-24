@@ -68,7 +68,15 @@ public class TestUtils {
      * @throws SocketException 网络信息获取异常
      */
     public static boolean isTestServer() throws SocketException {
-    	String serverIp = PropertyPraser.getProperty("jenkinsServerIp");
+    	
+		String JenkinHome = System.getenv("CATALINA_HOME");
+		if(null == JenkinHome || "".equals(JenkinHome)) {
+			return false;
+		}else {
+			return true;
+		}
+		
+    	/*String serverIp = PropertyPraser.getProperty("jenkinsServerIp");
     	Enumeration<NetworkInterface> allNetInterfaces = NetworkInterface.getNetworkInterfaces();
 		InetAddress ip = null;
 		while (allNetInterfaces.hasMoreElements()) {
@@ -83,7 +91,7 @@ public class TestUtils {
 				}
 			}
 		}
-		return false;
+		return false;*/
     }
 
 	/**

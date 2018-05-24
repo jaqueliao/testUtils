@@ -90,7 +90,7 @@ public class DriverUtils {
     	
     	String dateString = TestUtils.getTimeStamp();
     	if(TestUtils.isTestServer()) {
-    		String JenkinHome = PropertyPraser.getProperty("JenkinHome");
+    		String JenkinHome = System.getenv("CATALINA_HOME");
         	FileUtils.copyFile(captureBrowser(driver), new File(JenkinHome+"\\webapps\\testOutput\\img\\"+dateString+".png")); 
         	Reporter.log("<img class='pimg' src='/testOutput/img/"+dateString+".png' width='100'/>");
     	}

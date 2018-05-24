@@ -10,6 +10,8 @@ public class PropertyPraser {
     public static void main(String[] args) throws Exception{ 
     	
     	File root = new File("src/resources");
+    	
+    	
     	System.out.println(root.getAbsolutePath());
     	
     	System.out.println(getProperty("DBPASSWORD"));
@@ -22,7 +24,11 @@ public class PropertyPraser {
     	 try{
              //读取属性文件a.properties
     		 InputStream in = new BufferedInputStream (new FileInputStream(TestUtils.getWorkPath()+"/conf/conf.properties"));
-             prop.load(in);     ///加载属性列表
+             
+    		 //InputStream ips = PropertiesUtils.class.getResourceAsStream("/conf/conf.properties");  
+    		 
+    		 
+    		 prop.load(in);     ///加载属性列表
              value = prop.getProperty(key);
              in.close();
          }
