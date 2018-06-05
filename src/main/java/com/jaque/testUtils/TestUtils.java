@@ -69,7 +69,7 @@ public class TestUtils {
      */
     public static boolean isTestServer() throws SocketException {
     	
-		String JenkinHome = System.getenv("CATALINA_HOME");
+		String JenkinHome = getJenkinsHome();
 		if(null == JenkinHome || "".equals(JenkinHome)) {
 			return false;
 		}else {
@@ -92,6 +92,14 @@ public class TestUtils {
 			}
 		}
 		return false;*/
+    }
+    /**
+     * 获取Jenkins的tomcat目录
+     * @return
+     * @throws SocketException
+     */
+    public static String getJenkinsHome() throws SocketException {
+    	return System.getenv("CATALINA_HOME");
     }
 
 	/**

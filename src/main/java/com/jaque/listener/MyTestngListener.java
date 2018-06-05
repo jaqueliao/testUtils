@@ -15,7 +15,7 @@ public class MyTestngListener implements ITestListener {
 		String fileName = "failTest" + TestUtils.getTimeStamp();
 		try {
 			if (TestUtils.isTestServer()) {
-				TestUtils.takeScreenSnap(PropertyPraser.getProperty("JenkinHome")+"\\webapps\\testOutput\\img\\" + fileName + ".png");
+				TestUtils.takeScreenSnap(TestUtils.getJenkinsHome()+"\\webapps\\testOutput\\img\\" + fileName + ".png");
 				Reporter.log("<img class='pimg' src='/testOutput/img/" + fileName + ".png' width='100'/>");
 			} else {
 				TestUtils.takeScreenSnap("test-output/img/" + fileName + ".png");
