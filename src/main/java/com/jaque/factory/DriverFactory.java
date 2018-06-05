@@ -13,6 +13,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.opera.OperaDriver;
+
+import com.jaque.testUtils.DriverUtils;
 /**
  * 
  * @author JaqueLiao
@@ -238,6 +240,7 @@ public class DriverFactory {
 			driver.manage().timeouts().implicitlyWait(this.globalTimeOut, TimeUnit.SECONDS);
 		}
 		if(!(0 == pageLoadTimeOut)){
+			//DriverUtils.setNextLoadTimeOut(driver, pageLoadTimeOut);
 	        driver.manage().timeouts().pageLoadTimeout(this.pageLoadTimeOut, TimeUnit.SECONDS);
 		}
 		if(!(null == browserDimension)) {

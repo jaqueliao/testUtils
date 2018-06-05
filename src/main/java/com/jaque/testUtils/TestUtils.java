@@ -54,7 +54,7 @@ public class TestUtils {
 	    //长度为几就循环几次
 	    sb.append(1);
 	    for(int i=1; i<11; ++i){
-	    	//产生0-61的数字
+	    	//产生0-10的数字
 	    	int number=random.nextInt(10);
 	    	//将产生的数字通过length次承载到sb中
 	    	sb.append(number);
