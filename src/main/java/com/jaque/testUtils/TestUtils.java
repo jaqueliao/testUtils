@@ -1,22 +1,14 @@
 package com.jaque.testUtils;
 
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Random;
-
-import javax.imageio.ImageIO;
 
 public class TestUtils {
 	
@@ -65,9 +57,8 @@ public class TestUtils {
     /**
      * 判断正在执行用例的服务器是否是jenkin部署的服务器
      * @return 返回是否是jenkins服务器
-     * @throws SocketException 网络信息获取异常
      */
-    public static boolean isTestServer() throws SocketException {
+    public static boolean isTestServer() {
     	
 		String JenkinHome = getJenkinsHome();
 		if(null == JenkinHome || "".equals(JenkinHome)) {
@@ -98,7 +89,7 @@ public class TestUtils {
      * @return
      * @throws SocketException
      */
-    public static String getJenkinsHome() throws SocketException {
+    public static String getJenkinsHome(){
     	return System.getenv("CATALINA_HOME");
     }
 

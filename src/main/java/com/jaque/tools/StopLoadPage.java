@@ -1,14 +1,11 @@
 package com.jaque.tools;
 
-import java.util.Date;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
+import com.jaque.testUtils.TestUtils;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+
+import java.util.Date;
+import java.util.concurrent.*;
 
 public class StopLoadPage extends Thread{
 	WebDriver driver = null;
@@ -34,12 +31,18 @@ public class StopLoadPage extends Thread{
 			
 		        try {  
 		            Future<String> future = exec.submit(call);  
-		            String obj = future.get(1000 * sec, TimeUnit.MILLISECONDS); //任务处理超时时间设为 sec 秒  
-		            System.out.println("任务成功返回:" + obj);   
-		        } catch (Exception e) {  
-					System.out.println(new Date().toString() + "  页面加载超时！");
-		        	((JavascriptExecutor) driver).executeScript("window.stop();"); 
-					System.out.println(new Date().toString() + "  执行停止完成！");
+		            String obj = future.get(1000 * sec, TimeUnit.MILLISECONDS); //任务处理超时时间设为 sec 秒
+					if(!TestUtils.isTestServer()){
+						System.out.println("任务成功返回:" + obj);
+					}
+		        } catch (Exception e) {
+					if(!TestUtils.isTestServer()) {
+						System.out.println(new Date().toString() + "  页面加载超时！");
+					}
+		        	((JavascriptExecutor) driver).executeScript("window.stop();");
+					if(!TestUtils.isTestServer()) {
+						System.out.println(new Date().toString() + "  执行停止完成！");
+					}
 		            //e.printStackTrace();  
 		        }  
 		        // 关闭线程池  
