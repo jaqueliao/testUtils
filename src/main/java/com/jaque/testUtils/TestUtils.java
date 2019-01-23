@@ -102,8 +102,7 @@ public class TestUtils {
     }
     /**
      * 获取Jenkins的tomcat目录
-     * @return
-     * @throws SocketException
+     * @return 返回jenkinshome
      */
     public static String getJenkinsHome(){
     	return System.getenv("CATALINA_HOME");

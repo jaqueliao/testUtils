@@ -31,7 +31,6 @@ public class DriverUtils {
      * 截取整个网页
      * @param driver
      * @return
-     * @throws IOException
      */
     public static File captureBrowser(WebDriver driver){
         // 截图整个网页  
@@ -86,7 +85,6 @@ public class DriverUtils {
     /**
      * 将浏览器截图传入报告
      * @param driver
-     * @throws Exception
      */
     public static void log(WebDriver driver){
     	
@@ -114,7 +112,6 @@ public class DriverUtils {
      * 往报告写入log的同时将浏览器截图传入报告
      * @param s	日志内容
      * @param driver 浏览器驱动
-     * @throws Exception
      */
     public static void log(String s, WebDriver driver){
     	log(s);
