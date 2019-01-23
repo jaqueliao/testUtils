@@ -1,5 +1,7 @@
 package com.jaque.testUtils;
 
+import org.testng.Reporter;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -44,8 +46,8 @@ public class TestUtils {
 	    Random random=new Random();  
 	    StringBuffer sb=new StringBuffer();
 	    //长度为几就循环几次
-	    sb.append(1);
-	    for(int i=1; i<11; ++i){
+	    sb.append(138);
+	    for(int i=1; i<9; ++i){
 	    	//产生0-10的数字
 	    	int number=random.nextInt(10);
 	    	//将产生的数字通过length次承载到sb中
@@ -53,6 +55,20 @@ public class TestUtils {
 	    }
 	    //将承载的字符转换成字符串
 	    return sb.toString();
+	}
+	/**
+	 * 根据日期生成手机号，避免重复
+	 * @return	返回手机号
+	 */
+	public static String getPhoneOfToday() {
+		StringBuffer sb=new StringBuffer();
+		//长度为几就循环几次
+		sb.append(188);
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddSSS");
+		sb.append(sdf.format(date).substring(3));
+		//将承载的字符转换成字符串
+		return sb.toString();
 	}
     /**
      * 判断正在执行用例的服务器是否是jenkin部署的服务器
@@ -118,6 +134,24 @@ public class TestUtils {
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * 等待1s并输出原因
+	 * @param text 等待原因
+	 */
+	public static void sleep(String text){
+		sleep(text, 1000);
+	}
+
+	/**
+	 * 等待一定时间并输出原因
+	 * @param text 原因
+	 * @param millisecond 时长：毫秒
+	 */
+	public static void sleep(String text,int millisecond){
+		DriverUtils.log(text);
+		try {Thread.sleep( millisecond); } catch (InterruptedException e) {e.printStackTrace();}
+	}
 	
 	/**
 	 * 获取工作目录
@@ -127,5 +161,9 @@ public class TestUtils {
 	public static String getWorkPath() throws URISyntaxException {
 		String workPath = TestUtils.class.getClassLoader().getResource("").toURI().getPath();
 		return workPath;
+	}
+
+	public static void main(String[] args) {
+		System.out.println(getPhoneOfToday());
 	}
 }

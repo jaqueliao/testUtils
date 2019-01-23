@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
@@ -31,7 +33,7 @@ public class DriverUtils {
      * @return
      * @throws IOException
      */
-    public static File captureBrowser(WebDriver driver) throws IOException{  
+    public static File captureBrowser(WebDriver driver){
         // 截图整个网页  
         File screen = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);  
         //FileUtils.copyFile(screen, new File("d:\\b.png")); 
@@ -86,19 +88,26 @@ public class DriverUtils {
      * @param driver
      * @throws Exception
      */
-    public static void log(WebDriver driver) throws Exception {
+    public static void log(WebDriver driver){
     	
     	String dateString = TestUtils.getTimeStamp();
     	if(TestUtils.isTestServer()) {
     		String JenkinHome = System.getenv("CATALINA_HOME");
-        	FileUtils.copyFile(captureBrowser(driver), new File(JenkinHome+"\\webapps\\testOutput\\img\\"+dateString+".png")); 
+    		try {
+				FileUtils.copyFile(captureBrowser(driver), new File(JenkinHome+"\\webapps\\testOutput\\img\\"+dateString+".png"));
+			}catch (IOException e){
+				Reporter.log("保存截图出错："+e.toString());
+			}
         	Reporter.log("<img class='pimg' src='/testOutput/img/"+dateString+".png' width='100'/>");
     	}
-    	else {   		
-    		FileUtils.copyFile(captureBrowser(driver), new File("test-output/img/"+dateString+".png")); 
+    	else {
+			try {
+				FileUtils.copyFile(captureBrowser(driver), new File("test-output/img/"+dateString+".png"));
+			}catch (IOException e){
+				Reporter.log("保存截图出错："+e.toString());
+			}
         	Reporter.log("<img class='pimg' src='../img/"+dateString+".png' width='100'/>");
     	}
-
     }
     
     /**
@@ -107,11 +116,31 @@ public class DriverUtils {
      * @param driver 浏览器驱动
      * @throws Exception
      */
-    public static void log(String s, WebDriver driver) throws Exception {
-    	Reporter.log(s,true);
+    public static void log(String s, WebDriver driver){
+    	log(s);
     	log(driver);
     }
 
+    /**
+     * log带时间
+     * @param s
+     */
+    public static void log(String s){
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String timeStr = sdf.format(date);
+        Reporter.log(timeStr + "  " + s,true);
+    }
+
+	/**
+	 * 等待millisecond毫秒之后截图保存日志
+	 * @param s 日志文本
+	 * @param millisecond 时长
+	 */
+	public static void log(String s,WebDriver driver,int millisecond){
+    	TestUtils.sleep(s,millisecond);
+    	log(driver);
+	}
     /**
      * 设置下一个页面自动停止加载
      * @param driver 浏览器驱动
