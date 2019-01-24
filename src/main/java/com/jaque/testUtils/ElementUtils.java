@@ -102,7 +102,11 @@ public class ElementUtils {
     public static void scrollToElement(WebDriver driver,WebElement element) {
 		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);  
     }
-
+    public static void scrollToElementAndClick(WebDriver driver,WebElement element) {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);
+        TestUtils.sleep("等待页面滚动完成");
+        element.click();
+    }
     /**
      * 将元素的截图在测试报告内显示
      * @param element

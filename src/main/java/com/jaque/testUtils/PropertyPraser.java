@@ -1,9 +1,6 @@
 package com.jaque.testUtils;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 
 public class PropertyPraser {
@@ -23,7 +20,8 @@ public class PropertyPraser {
     	Properties prop = new Properties(); 
     	 try{
              //读取属性文件a.properties
-    		 InputStream in = new BufferedInputStream (new FileInputStream(TestUtils.getWorkPath()+"/conf/conf.properties"));
+    		 //InputStream in = new BufferedInputStream (new FileInputStream(TestUtils.getWorkPath()+"/test/conf.properties"));
+             BufferedReader  in = new BufferedReader(new InputStreamReader(new  FileInputStream(new File(TestUtils.getWorkPath()+"/test/conf.properties")), "UTF-8"));
              
     		 //InputStream ips = PropertiesUtils.class.getResourceAsStream("/conf/conf.properties");  
     		 
