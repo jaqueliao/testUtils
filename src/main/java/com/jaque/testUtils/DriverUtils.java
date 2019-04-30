@@ -1,19 +1,18 @@
 package com.jaque.testUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import com.jaque.tools.StopLoadPage;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.testng.Reporter;
 
-import com.jaque.tools.StopLoadPage;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class DriverUtils {
 	
@@ -124,7 +123,7 @@ public class DriverUtils {
      */
     public static void log(String s){
         Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String timeStr = sdf.format(date);
         Reporter.log(timeStr + "  " + s,true);
     }

@@ -1,12 +1,9 @@
 package com.jaque.testUtils;
 
-import org.testng.Reporter;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.net.SocketException;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -143,13 +140,27 @@ public class TestUtils {
 	}
 
 	/**
+	 * 等待1s
+	 */
+	public static void sleep(){
+		sleep(1000);
+	}
+
+	/**
+	 * 等待
+	 * @param millisecond 时长：毫秒
+	 */
+	public static void sleep(int millisecond){
+		try {Thread.sleep( millisecond); } catch (InterruptedException e) {e.printStackTrace();}
+	}
+	/**
 	 * 等待一定时间并输出原因
 	 * @param text 原因
 	 * @param millisecond 时长：毫秒
 	 */
 	public static void sleep(String text,int millisecond){
+		sleep(millisecond);
 		DriverUtils.log(text);
-		try {Thread.sleep( millisecond); } catch (InterruptedException e) {e.printStackTrace();}
 	}
 	
 	/**

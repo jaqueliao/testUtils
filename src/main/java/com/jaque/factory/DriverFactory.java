@@ -1,10 +1,5 @@
 package com.jaque.factory;
 
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -14,7 +9,10 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.opera.OperaDriver;
 
-import com.jaque.testUtils.DriverUtils;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 /**
  * 
  * @author JaqueLiao
@@ -74,6 +72,7 @@ public class DriverFactory {
 	 * @return 返回浏览器驱动
 	 */
 	public WebDriver getDriver() {
+		System.setProperty("org.uncommons.reportng.escape-output", "false");
 		switch(browser.toLowerCase()) {
 		//谷歌浏览器
 		case "chrome" : 

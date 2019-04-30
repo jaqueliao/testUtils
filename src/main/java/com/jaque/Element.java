@@ -1,0 +1,717 @@
+package com.jaque;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.Select;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
+/**
+ * 元素包装类，为元素添加了定位/操作及断言等封装
+ * @CreateDate 2019-04-29 09:00:00
+ * @author jaqueliao
+ */
+public class Element {
+
+    private WebDriver driver;//浏览器驱动
+    private Element pElement;//父元素，pElement与driver必须设置一个
+    private Element iframe;//设置之后本元素表示在此iframe内，会通过此iframe找寻元素
+    private String description;//元素描述文本
+    private By by; //选择器
+    private int index = 0;//若选择器可找到多个元素，此处表示第几个
+    private boolean signForOperate = false;//操作元素时是否标志，给元素加红色边框
+
+    public Element() {}
+    public Element(WebDriver driver) {
+        this.driver = driver;
+    }
+
+    /**
+     * 设置浏览器driver，使用PageTemp设置后也可使用此方法更新，不推荐使用
+     * @param driver 浏览器驱动
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element driver(WebDriver driver){
+        this.driver = driver;
+        return this;
+    }
+
+    /**
+     * 设置父元素，若设置之后，会使用pElement查询元素
+     * @param pElement 父元素
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element pElement(Element pElement){
+        this.pElement = pElement;
+        return this;
+    }
+
+    /**
+     * 设置iframe，若设置之后，切换到此iframe后再查询元素
+     * @param iframe iframe
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element iframe(Element iframe){
+        this.iframe = iframe;
+        return this;
+    }
+    /**
+     * 设置元素描述信息
+     * @param description 描述文本
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element describe(String description){
+        this.description = description;
+        return this;
+    }
+
+    /**
+     * 设置选取第几个元素
+     * @param index 元素序号
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element index(int index){
+        this.index = index;
+        return this;
+    }
+
+    /**
+     * 操作元素时是否标志，给元素加红色边框
+     * @param signForOperate 是否添加
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element sign(boolean signForOperate){
+        // TODO 待增加添加边框操作
+        this.signForOperate = signForOperate;
+        return this;
+    }
+
+    /**
+     * 根据id定位
+     * @param id id
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element id(String id){
+        this.by = By.id(id);
+        return this;
+    }
+
+    /**
+     * 根据name定位
+     * @param name name
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element name(String name){
+        this.by = By.name(name);
+        return this;
+    }
+
+    /**
+     * 根据className定位
+     * @param className className
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element className(String className){
+        this.by = By.className(className);
+        return this;
+    }
+
+    /**
+     * 根据xpath定位
+     * @param xpath xpath
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element xpath(String xpath){
+        this.by = By.xpath(xpath);
+        return this;
+    }
+
+    /**
+     * 根据cssSelector定位
+     * @param css css选择器
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element css(String css){
+        this.by = By.cssSelector(css);
+        return this;
+    }
+
+    /**
+     * 根据标签定位
+     * @param tagName 标签名
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element tagName(String tagName){
+        this.by = By.tagName(tagName);
+        return this;
+    }
+
+    /**
+     * 根据链接文本定位
+     * @param linkText 链接文本
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element linkText(String linkText){
+        this.by = By.linkText(linkText);
+        return this;
+    }
+
+    /**
+     * 根据链接的部分文本定位
+     * @param linkText 链接文本
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element partialLinkText(String linkText){
+        this.by = By.partialLinkText(linkText);
+        return this;
+    }
+
+    /**
+     * 根据元素文本定位
+     * @param text 元素文本
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element text(String text){
+        this.by = By.xpath("//*[text()='"+ text +"']");
+        return this;
+    }
+
+    /**
+     * 根据元素包含的部分文本定位
+     * @param text 部分文本内容
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element containText(String text){
+        this.by = By.xpath("//*[contains(text(),'"+text+"')]");
+        return this;
+    }
+
+    /**
+     * 获取Selenium自带的WebElement类型的元素
+     * @return 返回WebElement
+     */
+    public WebElement getElement(){
+        if (null != this.pElement){
+            return this.pElement.getElement().findElements(by).get(index);
+        }
+        if(null != this.driver){
+            return this.driver.findElements(by).get(index);
+        }
+        throw new IllegalArgumentException( "driver 与 pElement 不能同时为空");
+    }
+
+    /**
+     * 获取当前设置的选择器可找打的所有Selenium自带的WebElement类型的元素
+     * @return 返回List<WebElement>
+     */
+    public List<WebElement> getAllElements(){
+        if (null != this.pElement){
+            return this.pElement.getElement().findElements(by);
+        }
+        if(null != this.driver){
+            return this.driver.findElements(by);
+        }
+        throw new IllegalArgumentException( "driver 与 pElement 不能同时为空");
+    }
+
+    /**
+     * 点击操作
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element click(){
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            getElement().click();
+            this.driver.switchTo().defaultContent();
+        }else{
+            getElement().click();
+        }
+        return this;
+    }
+
+    /**
+     * 移动到元素中间然后点击，当元素是不可点击时，但要点击此元素所在的位置时可使用
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element moveToElementThenclick(){
+        Actions actions = new Actions(this.driver);
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            actions.moveToElement(getElement()).click().perform();
+            this.driver.switchTo().defaultContent();
+        }else{
+            actions.moveToElement(getElement()).click().perform();
+        }
+        return this;
+    }
+
+    /**
+     * 输入内容
+     * @param keysToSend 字符串或者Keys
+     */
+    public Element type(CharSequence... keysToSend){
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            getElement().sendKeys(keysToSend);
+            this.driver.switchTo().defaultContent();
+        }else{
+            getElement().sendKeys(keysToSend);
+        }
+        return this;
+    }
+
+    /**
+     * 清除内容，一般只对input生效
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element clear(){
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            getElement().clear();
+            this.driver.switchTo().defaultContent();
+        }else{
+            getElement().clear();
+        }
+        return this;
+    }
+
+    /**
+     * 多选元素 通过index选择
+     * @param index index
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element selectByIndex(int index){
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            Select select = new Select(getElement());
+            select.selectByIndex(index);
+            this.driver.switchTo().defaultContent();
+        }else{
+            Select select = new Select(getElement());
+            select.selectByIndex(index);
+        }
+        return this;
+    }
+
+    /**
+     * 多选元素 通过文本选择
+     * @param text 选择项
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element selectByVisibleText(String text){
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            Select select = new Select(getElement());
+            select.selectByVisibleText(text);
+            this.driver.switchTo().defaultContent();
+        }else{
+            Select select = new Select(getElement());
+            select.selectByVisibleText(text);
+        }
+        return this;
+    }
+
+    /**
+     * 多选元素 通过value值选择
+     * @param value value
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element selectByValue(String value){
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            Select select = new Select(getElement());
+            select.selectByValue(value);
+            this.driver.switchTo().defaultContent();
+        }else{
+            Select select = new Select(getElement());
+            select.selectByValue(value);
+        }
+        return this;
+    }
+
+    /**
+     * 多选元素 通过index取消选择
+     * @param index index
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element deselectByIndex(int index){
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            Select select = new Select(getElement());
+            select.deselectByIndex(index);
+            this.driver.switchTo().defaultContent();
+        }else{
+            Select select = new Select(getElement());
+            select.deselectByIndex(index);
+        }
+        return this;
+    }
+
+    /**
+     * 多选元素 通过文本取消选择
+     * @param text 选择项
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element deselectByVisibleText(String text){
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            Select select = new Select(getElement());
+            select.deselectByVisibleText(text);
+            this.driver.switchTo().defaultContent();
+        }else{
+            Select select = new Select(getElement());
+            select.deselectByVisibleText(text);
+        }
+        return this;
+    }
+
+    /**
+     * 多选元素 通过value值取消选择
+     * @param value value
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element deselectByValue(String value){
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            Select select = new Select(getElement());
+            select.deselectByValue(value);
+            this.driver.switchTo().defaultContent();
+        }else{
+            Select select = new Select(getElement());
+            select.deselectByValue(value);
+        }
+        return this;
+    }
+
+    /**
+     * 取消所有选择
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element deselectAll(){
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            Select select = new Select(getElement());
+            select.deselectAll();
+            this.driver.switchTo().defaultContent();
+        }else{
+            Select select = new Select(getElement());
+            select.deselectAll();
+        }
+        return this;
+    }
+
+    /**
+     * 是否可多选
+     * @return isMultiple
+     */
+    public boolean isMultiple(){
+        boolean isMultiple;
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            Select select = new Select(getElement());
+            isMultiple =  select.isMultiple();
+            this.driver.switchTo().defaultContent();
+        }else{
+            Select select = new Select(getElement());
+            isMultiple =  select.isMultiple();
+        }
+        return isMultiple;
+    }
+
+    /**
+     * 选项是否是已选中状态，一般用于单选
+     * @return boolean
+     */
+    public boolean isSelected(){
+        boolean isSelected;
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            isSelected = getElement().isSelected();
+            this.driver.switchTo().defaultContent();
+        }else{
+            isSelected = getElement().isSelected();
+        }
+        return isSelected;
+    }
+
+    /**
+     * 元素是否显示
+     * @return boolean
+     */
+    public boolean isDisplayed(){
+        boolean isDisplayed;
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            isDisplayed = getElement().isDisplayed();
+            this.driver.switchTo().defaultContent();
+        }else{
+            isDisplayed = getElement().isDisplayed();
+        }
+        return isDisplayed;
+    }
+
+    /**
+     * 元素是否可用，只有当元素是input，且不可用时才会返回false
+     * @return boolean
+     */
+    public boolean isEnabled(){
+        boolean isEnabled;
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            isEnabled = getElement().isEnabled();
+            this.driver.switchTo().defaultContent();
+        }else{
+            isEnabled = getElement().isEnabled();
+        }
+        return isEnabled;
+    }
+
+    /**
+     * 返回所有选项的内容
+     * @return List<String>
+     */
+    public List<String> getAllOptionsText(){
+        List<String> list = new ArrayList<>();
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            Select select = new Select(getElement());
+            for(WebElement e:select.getOptions()){
+                list.add(e.getText());
+            }
+            this.driver.switchTo().defaultContent();
+        }else{
+            Select select = new Select(getElement());
+            for(WebElement e:select.getOptions()){
+                list.add(e.getText());
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 返回所有选项的value值
+     * @return List<String>
+     */
+    public List<String> getAllOptionsValue(){
+        List<String> list = new ArrayList<>();
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            Select select = new Select(getElement());
+            for(WebElement e:select.getOptions()){
+                list.add(e.getAttribute("value"));
+            }
+            this.driver.switchTo().defaultContent();
+        }else{
+            Select select = new Select(getElement());
+            for(WebElement e:select.getOptions()){
+                list.add(e.getAttribute("value"));
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 获取多选的选项个数
+     * @return 个数
+     */
+    public int getSelectSize(){
+        int size = 0;
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            Select select = new Select(getElement());
+            size = select.getOptions().size();
+            this.driver.switchTo().defaultContent();
+        }else{
+            Select select = new Select(getElement());
+            size = select.getOptions().size();
+        }
+        return size;
+    }
+
+    /**
+     * 返回所有已选选项的内容
+     * @return List<String>
+     */
+    public List<String> getSelectedOptionsText(){
+        List<String> list = new ArrayList<>();
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            Select select = new Select(getElement());
+            for(WebElement e:select.getAllSelectedOptions()){
+                list.add(e.getText());
+            }
+            this.driver.switchTo().defaultContent();
+        }else{
+            Select select = new Select(getElement());
+            for(WebElement e:select.getAllSelectedOptions()){
+                list.add(e.getText());
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 返回所有选项的value值
+     * @return List<String>
+     */
+    public List<String> getSelectedOptionsValue(){
+        List<String> list = new ArrayList<>();
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            Select select = new Select(getElement());
+            for(WebElement e:select.getAllSelectedOptions()){
+                list.add(e.getAttribute("value"));
+            }
+            this.driver.switchTo().defaultContent();
+        }else{
+            Select select = new Select(getElement());
+            for(WebElement e:select.getAllSelectedOptions()){
+                list.add(e.getAttribute("value"));
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 获取多选的已选选项个数
+     * @return 个数
+     */
+    public int getSelectedSize(){
+        int size = 0;
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            Select select = new Select(getElement());
+            size = select.getAllSelectedOptions().size();
+            this.driver.switchTo().defaultContent();
+        }else{
+            Select select = new Select(getElement());
+            size = select.getAllSelectedOptions().size();
+        }
+        return size;
+    }
+
+    /**
+     * 返回第一个已选选项的内容
+     * @return String
+     */
+    public String getFirstSelectedText(){
+        String firstSelectedText;
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            Select select = new Select(getElement());
+            firstSelectedText = select.getFirstSelectedOption().getText();
+            this.driver.switchTo().defaultContent();
+        }else{
+            Select select = new Select(getElement());
+            firstSelectedText = select.getFirstSelectedOption().getText();
+        }
+        return firstSelectedText;
+    }
+
+    /**
+     * 返回所有选项的value值
+     * @return List<String>
+     */
+    public String getFirstSelectedValue(){
+        String firstSelectedValue;
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            Select select = new Select(getElement());
+            firstSelectedValue = select.getFirstSelectedOption().getAttribute("value");
+            this.driver.switchTo().defaultContent();
+        }else{
+            Select select = new Select(getElement());
+            firstSelectedValue = select.getFirstSelectedOption().getAttribute("value");
+        }
+        return firstSelectedValue;
+    }
+
+    /**
+     * 获取显示的文本内容，当元素隐藏时此方法获取的值可能为空
+     * @return 显示的文本内容
+     */
+    public String getText(){
+        String text;
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            text = getElement().getText();
+            this.driver.switchTo().defaultContent();
+        }else{
+            text = getElement().getText();
+        }
+        return text;
+    }
+
+    /**
+     * 获取文本内容，即使元素隐藏时也可获取内容
+     * @return 文本内容
+     */
+    public String getContent(){
+        String text;
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            text = getElement().getAttribute("textContent");
+            this.driver.switchTo().defaultContent();
+        }else{
+            text = getElement().getAttribute("textContent");
+        }
+        return text;
+    }
+
+    /**
+     * 一般元素为input时获取内容使用此方法，getText或getContent获取的内容可能为空
+     * @return 返回元素文本
+     */
+    public String getValue(){
+        String text;
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            text = getElement().getAttribute("value");
+            this.driver.switchTo().defaultContent();
+        }else{
+            text = getElement().getAttribute("value");
+        }
+        return text;
+    }
+
+    /**
+     * 等待
+     * @param millisecond 毫秒数
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element sleep(int millisecond){
+        try {Thread.sleep( millisecond); } catch (InterruptedException e) {e.printStackTrace();}
+        return this;
+    }
+
+    /**
+     * 等待1s
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element sleep(){
+        return this.sleep(1000);
+    }
+
+    /**
+     * 断言 元素包含文本
+     * @param s 文本
+     */
+    public void assert_hasText(String s) {
+        assertTrue(getText().contains(s) ||getContent().contains(s) || getValue().contains(s) );
+
+    }
+
+    /**
+     * 断言 元素内文本与期望值相等
+     * @param s 文本
+     */
+    public void assert_equalsText(String s) {
+        assertEquals(getText(),s);
+    }
+}

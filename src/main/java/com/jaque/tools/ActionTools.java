@@ -47,11 +47,7 @@ public abstract class ActionTools {
                 if (!TestUtils.isTestServer()) {
                     e.printStackTrace();
                 }
-                try {
-                    Thread.sleep(sec * 1000);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
+                TestUtils.sleep(sec*1000);
                 retryCount--;
                 retry();
             }

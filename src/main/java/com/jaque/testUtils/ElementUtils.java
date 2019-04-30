@@ -1,24 +1,18 @@
 package com.jaque.testUtils;
-import java.awt.Rectangle;  
-import java.awt.image.BufferedImage;  
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;  
-  
-import org.apache.commons.io.FileUtils;  
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.OutputType;  
-import org.openqa.selenium.Point;  
-import org.openqa.selenium.TakesScreenshot;  
-import org.openqa.selenium.WebDriver;  
-import org.openqa.selenium.WebElement;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.testng.Reporter;
-import org.testng.annotations.Test;  
+import org.testng.annotations.Test;
+
+import javax.imageio.ImageIO;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class ElementUtils {
 	
@@ -150,6 +144,37 @@ public class ElementUtils {
     	}
 		return true;
     }
+
+    /**
+     * 判断元素是否在父元素内出现
+     * @param pelement 父元素
+     * @param by
+     * @return
+     */
+    public static boolean isElementPresent(WebElement pelement,By by) {
+        try {
+            pelement.findElement(by);
+        }catch(Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static void waitForElementClickalbeAndClick(WebElement element){
+        int time = 1;
+        while(true){
+            try{
+                element.click();
+                break;
+            }catch (Exception e){
+                if(time >5){
+                    throw new WebDriverException("无法点击元素");
+                }
+                TestUtils.sleep("元素暂时无法点击，1s之后重试");
+            }
+            time++;
+        }
+    }
     @Test  
     public void testCaptureElement() throws IOException{  
     	
@@ -158,12 +183,6 @@ public class ElementUtils {
 		 
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--disable-infobars");
-		//不加载图片
-/*		Map<String, Object> prefs = new HashMap<String, Object>();
-		prefs.put("profile.managed_default_content_settings.images", 2);
-		options.setExperimentalOption("prefs", prefs);*/
-
-		System.setProperty("webdriver.chrome.driver", "F:\\AutoTestWorkSpace\\webDrivers\\chromedriver.exe");
 		WebDriver driver = new ChromeDriver(options);
         driver.manage().window().maximize();  
         driver.get("http://www.w3school.com.cn/tiy/t.asp?f=html_iframe_align");  
