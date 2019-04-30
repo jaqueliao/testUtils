@@ -84,10 +84,8 @@ public class Assertion {
      * 用例结束断言
      */
     public static void end(){
-        try{
-            Assert.assertTrue(getTestAssertion().flag);
-        }finally {
-            assertMap.remove(getTestName());
+        if(!getTestAssertion().flag){
+            Assert.fail();
         }
     }
 
@@ -99,13 +97,7 @@ public class Assertion {
      * @return 返回空，链式调用
      */
     public static Assertion assertContainStr(String actual,String expected, String message){
-        try{
-            Assert.assertTrue(actual.contains(expected),message);
-        }catch (Error e) {
-            e.printStackTrace();
-            getTestAssertion().flag = false;
-        }
-        return null;
+        return assertTrue(actual.contains(expected),message);
     }
 
     /**
@@ -118,6 +110,37 @@ public class Assertion {
     public static Assertion assertEquals(String actual,String expected, String message){
         try{
             Assert.assertEquals(actual, expected, message);
+        }catch (Error e) {
+            e.printStackTrace();
+            getTestAssertion().flag = false;
+        }
+        return null;
+    }
+
+    /**
+     * 断言值为真true
+     * @param actual 实际值
+     * @param message 附带信息
+     * @return 返回空，链式调用
+     */
+    public static Assertion assertTrue(boolean actual, String message){
+        try{
+            Assert.assertTrue(actual, message);
+        }catch (Error e) {
+            e.printStackTrace();
+            getTestAssertion().flag = false;
+        }
+        return null;
+    }
+    /**
+     * 断言值为假false
+     * @param actual 实际值
+     * @param message 附带信息
+     * @return 返回空，链式调用
+     */
+    public static Assertion assertFalse(boolean actual, String message){
+        try{
+            Assert.assertFalse(actual, message);
         }catch (Error e) {
             e.printStackTrace();
             getTestAssertion().flag = false;
@@ -235,12 +258,54 @@ public class Assertion {
         return assertValueContainStr(element.getElement(),str);
     }
 
+    /**
+     * 断言元素的文本内容
+     * @param element 元素
+     * @param text 文本
+     * @return 返回空，链式调用
+     */
+    public static Assertion assertText(WebElement element,String text){
+        String actualText = element.getText();
+        return assertEquals(actualText,text, "断言元素："+element+"的text值等于："+text);
+    }
+
+    /**
+     * 断言元素的text值包含str
+     * @param element 元素
+     * @param str 包含的字符串
+     * @return 返回空，链式调用
+     */
+    public static Assertion assertTextContainStr(WebElement element,String str){
+        assertContainStr(element.getText(), str,"断言元素："+element+"的text值包含："+str);
+        return null;
+    }
+
+    /**
+     * 断言元素的text值
+     * @param element 元素
+     * @param text text值
+     * @return 返回空，链式调用
+     */
+    public static Assertion assertText(Element element,String text){
+        return assertText(element.getElement(),text);
+    }
+
+    /**
+     * 断言元素的text值包含str
+     * @param element 元素
+     * @param str 包含的字符串
+     * @return 返回空，链式调用
+     */
+    public static Assertion assertTextContainStr(Element element,String str){
+        return assertTextContainStr(element.getElement(),str);
+    }
 
 
     /**
+     * TODO
+     * 待实现的assert
      * assertSelected（检查select的下拉菜单中选中是否正确）、
      * assertSelectedOptions（检查下拉菜单中的选项的是否正确）、
-     * assertText（检查指定元素的文本）、
      * assertTextPresent（检查在当前给用户显示的页面上是否有出现指定的文本）、
      * assertTextNotPresent（检查在当前给用户显示的页面上是否没有出现指定的文本）、
      * assertAttribute（检查当前指定元素的属性的值）、

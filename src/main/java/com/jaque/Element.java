@@ -1,8 +1,6 @@
 package com.jaque;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 
@@ -653,15 +651,7 @@ public class Element {
      * @return 文本内容
      */
     public String getContent(){
-        String text;
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            text = getElement().getAttribute("textContent");
-            this.driver.switchTo().defaultContent();
-        }else{
-            text = getElement().getAttribute("textContent");
-        }
-        return text;
+        return getAttribute("textContent");
     }
 
     /**
@@ -669,15 +659,105 @@ public class Element {
      * @return 返回元素文本
      */
     public String getValue(){
+        return getAttribute("value");
+    }
+
+    /**
+     * 获取某个属性的值
+     * @param name 属性名
+     * @return 属性值
+     */
+    public String getAttribute(String name){
         String text;
         if(null != iframe){
             this.driver.switchTo().frame(iframe.getElement());
-            text = getElement().getAttribute("value");
+            text = getElement().getAttribute(name);
             this.driver.switchTo().defaultContent();
         }else{
-            text = getElement().getAttribute("value");
+            text = getElement().getAttribute(name);
         }
         return text;
+    }
+
+    /**
+     * 获取css值
+     * @param propertyName css属性名
+     * @return css值
+     */
+    public String getCssValue(String propertyName){
+        String text;
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            text = getElement().getCssValue(propertyName);
+            this.driver.switchTo().defaultContent();
+        }else{
+            text = getElement().getCssValue(propertyName);
+        }
+        return text;
+    }
+
+    /**
+     * 获取标签名
+     * @return 标签名
+     */
+    public String getTagName(){
+        String text;
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            text = getElement().getTagName();
+            this.driver.switchTo().defaultContent();
+        }else{
+            text = getElement().getTagName();
+        }
+        return text;
+    }
+
+    /**
+     * 获取元素所在坐标
+     * @return 元素坐标
+     */
+    public Point getLocation(){
+        Point point;
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            point = getElement().getLocation();
+            this.driver.switchTo().defaultContent();
+        }else{
+            point = getElement().getLocation();
+        }
+        return point;
+    }
+
+    /**
+     * 获取元素的位置及大小
+     * @return Rectangle
+     */
+    public Rectangle getRect(){
+        Rectangle rectangle;
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            rectangle = getElement().getRect();
+            this.driver.switchTo().defaultContent();
+        }else{
+            rectangle = getElement().getRect();
+        }
+        return rectangle;
+    }
+
+    /**
+     * 获取元素的大小
+     * @return 元素大小
+     */
+    public Dimension getSize(){
+        Dimension size;
+        if(null != iframe){
+            this.driver.switchTo().frame(iframe.getElement());
+            size = getElement().getSize();
+            this.driver.switchTo().defaultContent();
+        }else{
+            size = getElement().getSize();
+        }
+        return size;
     }
 
     /**
@@ -713,5 +793,18 @@ public class Element {
      */
     public void assert_equalsText(String s) {
         assertEquals(getText(),s);
+    }
+
+    @Override
+    public String toString() {
+        return "Element{" +
+                "driver=" + driver +
+                ", pElement=" + pElement +
+                ", iframe=" + iframe +
+                ", description='" + description + '\'' +
+                ", by=" + by +
+                ", index=" + index +
+                ", signForOperate=" + signForOperate +
+                '}';
     }
 }
