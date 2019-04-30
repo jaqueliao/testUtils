@@ -206,7 +206,7 @@ public class Element {
 
     /**
      * 获取当前设置的选择器可找打的所有Selenium自带的WebElement类型的元素
-     * @return 返回List<WebElement>
+     * @return 返回WebElement的List
      */
     public List<WebElement> getAllElements(){
         if (null != this.pElement){
@@ -252,6 +252,7 @@ public class Element {
     /**
      * 输入内容
      * @param keysToSend 字符串或者Keys
+     * @return 返回Element对象本身，可以链式操作
      */
     public Element type(CharSequence... keysToSend){
         if(null != iframe){
@@ -472,7 +473,7 @@ public class Element {
 
     /**
      * 返回所有选项的内容
-     * @return List<String>
+     * @return  String List
      */
     public List<String> getAllOptionsText(){
         List<String> list = new ArrayList<>();
@@ -494,7 +495,7 @@ public class Element {
 
     /**
      * 返回所有选项的value值
-     * @return List<String>
+     * @return String List
      */
     public List<String> getAllOptionsValue(){
         List<String> list = new ArrayList<>();
@@ -534,7 +535,7 @@ public class Element {
 
     /**
      * 返回所有已选选项的内容
-     * @return List<String>
+     * @return String List
      */
     public List<String> getSelectedOptionsText(){
         List<String> list = new ArrayList<>();
@@ -556,7 +557,7 @@ public class Element {
 
     /**
      * 返回所有选项的value值
-     * @return List<String>
+     * @return String List
      */
     public List<String> getSelectedOptionsValue(){
         List<String> list = new ArrayList<>();
@@ -614,7 +615,7 @@ public class Element {
 
     /**
      * 返回所有选项的value值
-     * @return List<String>
+     * @return String List
      */
     public String getFirstSelectedValue(){
         String firstSelectedValue;

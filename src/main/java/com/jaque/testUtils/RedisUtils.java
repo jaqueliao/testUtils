@@ -1,13 +1,12 @@
 package com.jaque.testUtils;
 
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.util.CollectionUtils;
+
 import java.util.List;
-import java.util.Map;  
-import java.util.Set;  
-import java.util.concurrent.TimeUnit;  
-          
-          
-import org.springframework.data.redis.core.RedisTemplate;  
-import org.springframework.util.CollectionUtils;  
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
           
           
 /**
@@ -417,11 +416,11 @@ public class RedisUtils {
     }
 
     /**
-* 通过索引 获取list中的值
-* @param key 键
-* @param index 索引  index>=0时， 0 表头，1 第二个元素，依次类推；index<0时，-1，表尾，-2倒数第二个元素，依次类推
-* @return
-*/
+    * 通过索引 获取list中的值
+    * @param key 键
+    * @param index 索引  index>=0时， 0 表头，1 第二个元素，依次类推；index<0时，-1，表尾，-2倒数第二个元素，依次类推
+    * @return
+    */
     public Object lGetIndex(String key,long index){
         try {
             return redisTemplate.opsForList().index(key, index);
