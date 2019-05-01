@@ -4,7 +4,7 @@ git地址：[https://github.com/jaqueliao/testUtils]
 ---
 &nbsp;&nbsp;&nbsp;&nbsp;最开始做自动化的时候自己封装了一些工具类，把一些元素、driver的操作做了封装，所以就把这个项目叫做testUtils（测试工具）
 。  
-&nbsp;&nbsp;&nbsp;&nbsp;但最近看到一篇虫师的文章，他实现了一个poium测试库，核心是基于Page Objects实现元素定位的封装。看完之后，发现用这个测试库的话定位元素，元素操作都变得非常简洁，并且清晰明了。
+&nbsp;&nbsp;&nbsp;&nbsp;但最近看到一篇虫师的文章，他实现了一个python的poium测试库，核心是基于Page Objects实现元素定位的封装。看完之后，发现用这个测试库的话定位元素，元素操作都变得非常简洁，并且清晰明了。  
 &nbsp;&nbsp;&nbsp;&nbsp;由于我一直用的是java做自动化开发，并早就烦恼于java各种类库的引用与代码的繁琐，所以我就想java能不能也封装出相似的测试库呢。几经思索，终于想通了一些细节，并着手实现了框架。  
 <br>
 实现此框架的原则就是：
