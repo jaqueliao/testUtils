@@ -9,8 +9,8 @@ public class PageTempTest extends PageTemp {
         setDriver();
     }
 
-    public Element input = new Element(driver).css("#kw").describe("搜索输入框");
-    public Element btn = new Element(driver).css("#su").describe("百度一下按钮");
+    public Element input = new Element().css("#kw").describe("搜索输入框");
+    public Element btn = new Element().css("#su").describe("百度一下按钮");
 
 
     public Element classFrame = new Element().name("classFrame").describe("类详细描述的iframe");

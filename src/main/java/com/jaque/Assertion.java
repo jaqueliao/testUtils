@@ -9,17 +9,19 @@ import java.util.Map;
 
 /**
  * 封装此类是由于在一个Test中，可能会有多次assert的动作，但是只要第
- * 一个assert失败，后续的操作及assert都不会执行。
+ * 一个assert失败，后续的操作及assert都不会执行。<br/>
  * 使用此Assertion的用例中间的所有assert都不会导致用例停止执行，只会
- * 抛出异常，只有在调用了assertEnd()方法时，若失败才会停止执行。
+ * 抛出异常，只有在调用了assertEnd()方法时，若失败才会停止执行。<br/>
  *
  * 所以任何用例使用Assertion进行断言时，在用例最后一个断言处一定要增
- * 加一次assertEnd()掉用。
- * 如：
+ * 加一次end()调用。<br/>
+ * 如：<br/>
+ * <pre>
  * ...dosomething
  * Assertion.start().assertTitle(driver,"expectTitle")
  * ...dosomething
  * Assertion.assertLocation(driver,"expectUrl").end();//最后一次断言
+ * </pre>
  */
 public class Assertion {
 
