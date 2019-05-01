@@ -33,9 +33,15 @@ public class Assertion {
      * @return 测试用例方法名
      */
     private static String getTestName(){
-        //必须保证此方法是第二层调用，否则获取的方法名会有错误
+        String testName = "";
         StackTraceElement[] stacks = (new Throwable()).getStackTrace();
-        String testName = stacks[2].getClassName() + "-" + stacks[2].getMethodName();
+        for(StackTraceElement stack :stacks){
+            if("com.jaque.Assertion".equals(stack.getClassName())){
+                continue;
+            }
+            testName = stack.getClassName() + "-" + stack.getMethodName();
+            break;
+        }
         //System.out.println("getTestName:"+testName);
         return testName;
     }
@@ -45,9 +51,7 @@ public class Assertion {
      * @return 对应用例的断言实例
      */
     private static Assertion getTestAssertion(){
-        //必须保证此方法是第二层调用，否则获取的方法名会有错误
-        StackTraceElement[] stacks = (new Throwable()).getStackTrace();
-        String testName = stacks[2].getClassName() + "-" + stacks[2].getMethodName();
+        String testName = getTestName();
         //System.out.println("getTestAssertion:"+testName);
         Assertion assertion = assertMap.get(testName);
         if(null == assertion){
@@ -84,9 +88,16 @@ public class Assertion {
      * 用例结束断言
      */
     public static void end(){
-        if(!getTestAssertion().flag){
-            Assert.fail();
+        //System.out.print(getTestAssertion().flag);
+        try{
+            if(!getTestAssertion().flag){
+                Assert.fail("用例失败！");
+            }
+        }finally {
+            //System.out.print(assertMap);
+            assertMap.remove(getTestName());
         }
+
     }
 
     /**
@@ -156,7 +167,7 @@ public class Assertion {
      */
     public static Assertion assertUrl(WebDriver driver, String url){
         String actualUrl = driver.getCurrentUrl();
-        return assertEquals(actualUrl,url, "断言浏览器url："+actualUrl+"等于"+url);
+        return assertEquals(actualUrl,url, "断言浏览器url："+actualUrl+" 等于"+url);
     }
 
     /**
@@ -179,7 +190,7 @@ public class Assertion {
      */
     public static Assertion assertUrlContainStr(WebDriver driver, String str){
         String url = driver.getCurrentUrl();
-        return assertContainStr(url, str, "断言url：" + url + "包含文本：" + str);
+        return assertContainStr(url, str, "断言url：" + url + " 包含文本：" + str);
     }
 
     /**
@@ -190,7 +201,7 @@ public class Assertion {
      */
     public static Assertion assertTitle(WebDriver driver, String title){
         String actualTitle = driver.getTitle();
-        return assertEquals(actualTitle,title, "断言浏览器url："+actualTitle+"等于"+title);
+        return assertEquals(actualTitle,title, "断言浏览器title："+actualTitle+" 等于"+title);
     }
 
     /**
@@ -213,7 +224,7 @@ public class Assertion {
      */
     public static Assertion assertTitleContainStr(WebDriver driver, String str){
         String title = driver.getTitle();
-        return assertContainStr(title, str, "断言页面标题：" + title + "包含文本：" + str);
+        return assertContainStr(title, str, "断言页面标题：" + title + " 包含文本：" + str);
     }
 
     /**

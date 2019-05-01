@@ -11,7 +11,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 /**
- * 元素包装类，为元素添加了定位/操作及断言等封装
+ * 元素包装类，为元素添加了定位、操作及断言等封装
  * @CreateDate 2019-04-29 09:00:00
  * @author jaqueliao
  */
@@ -22,6 +22,8 @@ public class Element {
     private Element iframe;//设置之后本元素表示在此iframe内，会通过此iframe找寻元素
     private String description;//元素描述文本
     private By by; //选择器
+    private String findType; //查找元素的方式
+    private String selector; //元素定位字符串
     private int index = 0;//若选择器可找到多个元素，此处表示第几个
     private boolean signForOperate = false;//操作元素时是否标志，给元素加红色边框
 
@@ -96,6 +98,8 @@ public class Element {
      * @return 返回Element对象本身，可以链式设置属性
      */
     public Element id(String id){
+        this.findType = "id";
+        this.selector = id;
         this.by = By.id(id);
         return this;
     }
@@ -106,6 +110,8 @@ public class Element {
      * @return 返回Element对象本身，可以链式设置属性
      */
     public Element name(String name){
+        this.findType = "name";
+        this.selector = name;
         this.by = By.name(name);
         return this;
     }
@@ -116,6 +122,8 @@ public class Element {
      * @return 返回Element对象本身，可以链式设置属性
      */
     public Element className(String className){
+        this.findType = "className";
+        this.selector = className;
         this.by = By.className(className);
         return this;
     }
@@ -126,6 +134,8 @@ public class Element {
      * @return 返回Element对象本身，可以链式设置属性
      */
     public Element xpath(String xpath){
+        this.findType = "xpath";
+        this.selector = xpath;
         this.by = By.xpath(xpath);
         return this;
     }
@@ -136,6 +146,8 @@ public class Element {
      * @return 返回Element对象本身，可以链式设置属性
      */
     public Element css(String css){
+        this.findType = "css";
+        this.selector = css;
         this.by = By.cssSelector(css);
         return this;
     }
@@ -146,6 +158,8 @@ public class Element {
      * @return 返回Element对象本身，可以链式设置属性
      */
     public Element tagName(String tagName){
+        this.findType = "tagName";
+        this.selector = tagName;
         this.by = By.tagName(tagName);
         return this;
     }
@@ -156,6 +170,8 @@ public class Element {
      * @return 返回Element对象本身，可以链式设置属性
      */
     public Element linkText(String linkText){
+        this.findType = "linkText";
+        this.selector = linkText;
         this.by = By.linkText(linkText);
         return this;
     }
@@ -166,6 +182,8 @@ public class Element {
      * @return 返回Element对象本身，可以链式设置属性
      */
     public Element partialLinkText(String linkText){
+        this.findType = "partialLinkText";
+        this.selector = linkText;
         this.by = By.partialLinkText(linkText);
         return this;
     }
@@ -176,6 +194,8 @@ public class Element {
      * @return 返回Element对象本身，可以链式设置属性
      */
     public Element text(String text){
+        this.findType = "text";
+        this.selector = text;
         this.by = By.xpath("//*[text()='"+ text +"']");
         return this;
     }
@@ -186,6 +206,8 @@ public class Element {
      * @return 返回Element对象本身，可以链式设置属性
      */
     public Element containText(String text){
+        this.findType = "containText";
+        this.selector = text;
         this.by = By.xpath("//*[contains(text(),'"+text+"')]");
         return this;
     }
@@ -195,13 +217,41 @@ public class Element {
      * @return 返回WebElement
      */
     public WebElement getElement(){
-        if (null != this.pElement){
+        if(!isPresent()){
+            throw new IllegalArgumentException( "使用设置的定位方式无法定位到元素"+this);
+        }
+        if(length()<=this.index){
+            throw new IllegalArgumentException( "index大于可定为到元素个数："+length()+"，index为："+index);
+        }
+        if(null != this.pElement){
             return this.pElement.getElement().findElements(by).get(index);
         }
         if(null != this.driver){
             return this.driver.findElements(by).get(index);
         }
-        throw new IllegalArgumentException( "driver 与 pElement 不能同时为空");
+        return null;
+    }
+
+    /**
+     * 切换到iframe内，若未设置iframe则不切换
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element switchToFrame(){
+        if(null != iframe) {
+            this.driver.switchTo().frame(iframe.getElement());
+        }else{
+            //System.out.println("未设置iframe，不作切换");
+        }
+        return this;
+    }
+
+    /**
+     * 切换回默认上下文
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element switchToDefault(){
+        this.driver.switchTo().defaultContent();
+        return this;
     }
 
     /**
@@ -219,18 +269,19 @@ public class Element {
     }
 
     /**
+     * 用当前设置的选择器可定位的元素个数
+     * @return 选择器可定位的元素个数
+     */
+    public int length(){
+        return getAllElements().size();
+    }
+    /**
      * 点击操作
      * @return 返回Element对象本身，可以链式操作
      */
     public Element click(){
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            getElement().click();
-            this.driver.switchTo().defaultContent();
-        }else{
-            getElement().click();
-        }
-        return this;
+        this.switchToFrame().getElement().click();
+        return this.switchToDefault();
     }
 
     /**
@@ -239,14 +290,9 @@ public class Element {
      */
     public Element moveToElementThenclick(){
         Actions actions = new Actions(this.driver);
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            actions.moveToElement(getElement()).click().perform();
-            this.driver.switchTo().defaultContent();
-        }else{
-            actions.moveToElement(getElement()).click().perform();
-        }
-        return this;
+        this.switchToFrame();
+        actions.moveToElement(getElement()).click().perform();
+        return this.switchToDefault();
     }
 
     /**
@@ -255,14 +301,8 @@ public class Element {
      * @return 返回Element对象本身，可以链式操作
      */
     public Element type(CharSequence... keysToSend){
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            getElement().sendKeys(keysToSend);
-            this.driver.switchTo().defaultContent();
-        }else{
-            getElement().sendKeys(keysToSend);
-        }
-        return this;
+        this.switchToFrame().getElement().sendKeys(keysToSend);
+        return this.switchToDefault();
     }
 
     /**
@@ -270,14 +310,8 @@ public class Element {
      * @return 返回Element对象本身，可以链式操作
      */
     public Element clear(){
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            getElement().clear();
-            this.driver.switchTo().defaultContent();
-        }else{
-            getElement().clear();
-        }
-        return this;
+        this.switchToFrame().getElement().clear();
+        return this.switchToDefault();
     }
 
     /**
@@ -286,16 +320,10 @@ public class Element {
      * @return 返回Element对象本身，可以链式操作
      */
     public Element selectByIndex(int index){
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            Select select = new Select(getElement());
-            select.selectByIndex(index);
-            this.driver.switchTo().defaultContent();
-        }else{
-            Select select = new Select(getElement());
-            select.selectByIndex(index);
-        }
-        return this;
+        this.switchToFrame();
+        Select select = new Select(getElement());
+        select.selectByIndex(index);
+        return this.switchToDefault();
     }
 
     /**
@@ -304,16 +332,10 @@ public class Element {
      * @return 返回Element对象本身，可以链式操作
      */
     public Element selectByVisibleText(String text){
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            Select select = new Select(getElement());
-            select.selectByVisibleText(text);
-            this.driver.switchTo().defaultContent();
-        }else{
-            Select select = new Select(getElement());
-            select.selectByVisibleText(text);
-        }
-        return this;
+        this.switchToFrame();
+        Select select = new Select(getElement());
+        select.selectByVisibleText(text);
+        return this.switchToDefault();
     }
 
     /**
@@ -322,16 +344,10 @@ public class Element {
      * @return 返回Element对象本身，可以链式操作
      */
     public Element selectByValue(String value){
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            Select select = new Select(getElement());
-            select.selectByValue(value);
-            this.driver.switchTo().defaultContent();
-        }else{
-            Select select = new Select(getElement());
-            select.selectByValue(value);
-        }
-        return this;
+        this.switchToFrame();
+        Select select = new Select(getElement());
+        select.selectByValue(value);
+        return this.switchToDefault();
     }
 
     /**
@@ -339,17 +355,11 @@ public class Element {
      * @param index index
      * @return 返回Element对象本身，可以链式操作
      */
-    public Element deselectByIndex(int index){
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            Select select = new Select(getElement());
-            select.deselectByIndex(index);
-            this.driver.switchTo().defaultContent();
-        }else{
-            Select select = new Select(getElement());
-            select.deselectByIndex(index);
-        }
-        return this;
+    public Element deselectByIndex(int index) {
+        this.switchToFrame();
+        Select select = new Select(getElement());
+        select.deselectByIndex(index);
+        return this.switchToDefault();
     }
 
     /**
@@ -358,16 +368,10 @@ public class Element {
      * @return 返回Element对象本身，可以链式操作
      */
     public Element deselectByVisibleText(String text){
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            Select select = new Select(getElement());
-            select.deselectByVisibleText(text);
-            this.driver.switchTo().defaultContent();
-        }else{
-            Select select = new Select(getElement());
-            select.deselectByVisibleText(text);
-        }
-        return this;
+        this.switchToFrame();
+        Select select = new Select(getElement());
+        select.deselectByVisibleText(text);
+        return this.switchToDefault();
     }
 
     /**
@@ -376,16 +380,10 @@ public class Element {
      * @return 返回Element对象本身，可以链式操作
      */
     public Element deselectByValue(String value){
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            Select select = new Select(getElement());
-            select.deselectByValue(value);
-            this.driver.switchTo().defaultContent();
-        }else{
-            Select select = new Select(getElement());
-            select.deselectByValue(value);
-        }
-        return this;
+        this.switchToFrame();
+        Select select = new Select(getElement());
+        select.deselectByValue(value);
+        return this.switchToDefault();
     }
 
     /**
@@ -393,16 +391,10 @@ public class Element {
      * @return 返回Element对象本身，可以链式操作
      */
     public Element deselectAll(){
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            Select select = new Select(getElement());
-            select.deselectAll();
-            this.driver.switchTo().defaultContent();
-        }else{
-            Select select = new Select(getElement());
-            select.deselectAll();
-        }
-        return this;
+        this.switchToFrame();
+        Select select = new Select(getElement());
+        select.deselectAll();
+        return this.switchToDefault();
     }
 
     /**
@@ -411,15 +403,10 @@ public class Element {
      */
     public boolean isMultiple(){
         boolean isMultiple;
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            Select select = new Select(getElement());
-            isMultiple =  select.isMultiple();
-            this.driver.switchTo().defaultContent();
-        }else{
-            Select select = new Select(getElement());
-            isMultiple =  select.isMultiple();
-        }
+        this.switchToFrame();
+        Select select = new Select(getElement());
+        isMultiple =  select.isMultiple();
+        this.switchToDefault();
         return isMultiple;
     }
 
@@ -429,13 +416,9 @@ public class Element {
      */
     public boolean isSelected(){
         boolean isSelected;
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            isSelected = getElement().isSelected();
-            this.driver.switchTo().defaultContent();
-        }else{
-            isSelected = getElement().isSelected();
-        }
+        this.switchToFrame();
+        isSelected = getElement().isSelected();
+        this.switchToDefault();
         return isSelected;
     }
 
@@ -445,13 +428,9 @@ public class Element {
      */
     public boolean isDisplayed(){
         boolean isDisplayed;
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            isDisplayed = getElement().isDisplayed();
-            this.driver.switchTo().defaultContent();
-        }else{
-            isDisplayed = getElement().isDisplayed();
-        }
+        this.switchToFrame();
+        isDisplayed = getElement().isDisplayed();
+        this.switchToDefault();
         return isDisplayed;
     }
 
@@ -461,13 +440,9 @@ public class Element {
      */
     public boolean isEnabled(){
         boolean isEnabled;
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            isEnabled = getElement().isEnabled();
-            this.driver.switchTo().defaultContent();
-        }else{
-            isEnabled = getElement().isEnabled();
-        }
+        this.switchToFrame();
+        isEnabled = getElement().isEnabled();
+        this.switchToDefault();
         return isEnabled;
     }
 
@@ -477,19 +452,12 @@ public class Element {
      */
     public List<String> getAllOptionsText(){
         List<String> list = new ArrayList<>();
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            Select select = new Select(getElement());
-            for(WebElement e:select.getOptions()){
-                list.add(e.getText());
-            }
-            this.driver.switchTo().defaultContent();
-        }else{
-            Select select = new Select(getElement());
-            for(WebElement e:select.getOptions()){
-                list.add(e.getText());
-            }
+        this.switchToFrame();
+        Select select = new Select(getElement());
+        for(WebElement e:select.getOptions()){
+            list.add(e.getText());
         }
+        this.switchToDefault();
         return list;
     }
 
@@ -499,19 +467,12 @@ public class Element {
      */
     public List<String> getAllOptionsValue(){
         List<String> list = new ArrayList<>();
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            Select select = new Select(getElement());
-            for(WebElement e:select.getOptions()){
-                list.add(e.getAttribute("value"));
-            }
-            this.driver.switchTo().defaultContent();
-        }else{
-            Select select = new Select(getElement());
-            for(WebElement e:select.getOptions()){
-                list.add(e.getAttribute("value"));
-            }
+        this.switchToFrame();
+        Select select = new Select(getElement());
+        for(WebElement e:select.getOptions()){
+            list.add(e.getAttribute("value"));
         }
+        this.switchToDefault();
         return list;
     }
 
@@ -521,15 +482,10 @@ public class Element {
      */
     public int getSelectSize(){
         int size = 0;
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            Select select = new Select(getElement());
-            size = select.getOptions().size();
-            this.driver.switchTo().defaultContent();
-        }else{
-            Select select = new Select(getElement());
-            size = select.getOptions().size();
-        }
+        this.switchToFrame();
+        Select select = new Select(getElement());
+        size = select.getOptions().size();
+        this.switchToDefault();
         return size;
     }
 
@@ -539,19 +495,12 @@ public class Element {
      */
     public List<String> getSelectedOptionsText(){
         List<String> list = new ArrayList<>();
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            Select select = new Select(getElement());
-            for(WebElement e:select.getAllSelectedOptions()){
-                list.add(e.getText());
-            }
-            this.driver.switchTo().defaultContent();
-        }else{
-            Select select = new Select(getElement());
-            for(WebElement e:select.getAllSelectedOptions()){
-                list.add(e.getText());
-            }
+        this.switchToFrame();
+        Select select = new Select(getElement());
+        for(WebElement e:select.getAllSelectedOptions()){
+            list.add(e.getText());
         }
+        this.switchToDefault();
         return list;
     }
 
@@ -561,19 +510,12 @@ public class Element {
      */
     public List<String> getSelectedOptionsValue(){
         List<String> list = new ArrayList<>();
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            Select select = new Select(getElement());
-            for(WebElement e:select.getAllSelectedOptions()){
-                list.add(e.getAttribute("value"));
-            }
-            this.driver.switchTo().defaultContent();
-        }else{
-            Select select = new Select(getElement());
-            for(WebElement e:select.getAllSelectedOptions()){
-                list.add(e.getAttribute("value"));
-            }
+        this.switchToFrame();
+        Select select = new Select(getElement());
+        for(WebElement e:select.getAllSelectedOptions()){
+            list.add(e.getAttribute("value"));
         }
+        this.switchToDefault();
         return list;
     }
 
@@ -583,15 +525,10 @@ public class Element {
      */
     public int getSelectedSize(){
         int size = 0;
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            Select select = new Select(getElement());
-            size = select.getAllSelectedOptions().size();
-            this.driver.switchTo().defaultContent();
-        }else{
-            Select select = new Select(getElement());
-            size = select.getAllSelectedOptions().size();
-        }
+        this.switchToFrame();
+        Select select = new Select(getElement());
+        size = select.getAllSelectedOptions().size();
+        this.switchToDefault();
         return size;
     }
 
@@ -601,15 +538,10 @@ public class Element {
      */
     public String getFirstSelectedText(){
         String firstSelectedText;
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            Select select = new Select(getElement());
-            firstSelectedText = select.getFirstSelectedOption().getText();
-            this.driver.switchTo().defaultContent();
-        }else{
-            Select select = new Select(getElement());
-            firstSelectedText = select.getFirstSelectedOption().getText();
-        }
+        this.switchToFrame();
+        Select select = new Select(getElement());
+        firstSelectedText = select.getFirstSelectedOption().getText();
+        this.switchToDefault();
         return firstSelectedText;
     }
 
@@ -619,15 +551,10 @@ public class Element {
      */
     public String getFirstSelectedValue(){
         String firstSelectedValue;
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            Select select = new Select(getElement());
-            firstSelectedValue = select.getFirstSelectedOption().getAttribute("value");
-            this.driver.switchTo().defaultContent();
-        }else{
-            Select select = new Select(getElement());
-            firstSelectedValue = select.getFirstSelectedOption().getAttribute("value");
-        }
+        this.switchToFrame();
+        Select select = new Select(getElement());
+        firstSelectedValue = select.getFirstSelectedOption().getAttribute("value");
+        this.switchToDefault();
         return firstSelectedValue;
     }
 
@@ -637,13 +564,9 @@ public class Element {
      */
     public String getText(){
         String text;
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            text = getElement().getText();
-            this.driver.switchTo().defaultContent();
-        }else{
-            text = getElement().getText();
-        }
+        this.switchToFrame();
+        text = getElement().getText();
+        this.switchToDefault();
         return text;
     }
 
@@ -670,13 +593,9 @@ public class Element {
      */
     public String getAttribute(String name){
         String text;
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            text = getElement().getAttribute(name);
-            this.driver.switchTo().defaultContent();
-        }else{
-            text = getElement().getAttribute(name);
-        }
+        this.switchToFrame();
+        text = getElement().getAttribute(name);
+        this.switchToDefault();
         return text;
     }
 
@@ -687,13 +606,9 @@ public class Element {
      */
     public String getCssValue(String propertyName){
         String text;
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            text = getElement().getCssValue(propertyName);
-            this.driver.switchTo().defaultContent();
-        }else{
-            text = getElement().getCssValue(propertyName);
-        }
+        this.switchToFrame();
+        text = getElement().getCssValue(propertyName);
+        this.switchToDefault();
         return text;
     }
 
@@ -703,13 +618,9 @@ public class Element {
      */
     public String getTagName(){
         String text;
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            text = getElement().getTagName();
-            this.driver.switchTo().defaultContent();
-        }else{
-            text = getElement().getTagName();
-        }
+        this.switchToFrame();
+        text = getElement().getTagName();
+        this.switchToDefault();
         return text;
     }
 
@@ -719,13 +630,9 @@ public class Element {
      */
     public Point getLocation(){
         Point point;
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            point = getElement().getLocation();
-            this.driver.switchTo().defaultContent();
-        }else{
-            point = getElement().getLocation();
-        }
+        this.switchToFrame();
+        point = getElement().getLocation();
+        this.switchToDefault();
         return point;
     }
 
@@ -735,13 +642,9 @@ public class Element {
      */
     public Rectangle getRect(){
         Rectangle rectangle;
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            rectangle = getElement().getRect();
-            this.driver.switchTo().defaultContent();
-        }else{
-            rectangle = getElement().getRect();
-        }
+        this.switchToFrame();
+        rectangle = getElement().getRect();
+        this.switchToDefault();
         return rectangle;
     }
 
@@ -751,13 +654,9 @@ public class Element {
      */
     public Dimension getSize(){
         Dimension size;
-        if(null != iframe){
-            this.driver.switchTo().frame(iframe.getElement());
-            size = getElement().getSize();
-            this.driver.switchTo().defaultContent();
-        }else{
-            size = getElement().getSize();
-        }
+        this.switchToFrame();
+        size = getElement().getSize();
+        this.switchToDefault();
         return size;
     }
 
@@ -777,6 +676,30 @@ public class Element {
      */
     public Element sleep(){
         return this.sleep(1000);
+    }
+
+    /**
+     * 当前元素是否存在
+     * @return 存在true，不存在false
+     */
+    public boolean isPresent() {
+        if (null != this.pElement){
+            try {
+                this.pElement.getElement().findElement(by);
+            }catch(Exception e) {
+                return false;
+            }
+            return true;
+        }
+        if(null != this.driver){
+            try {
+                this.driver.findElement(by);
+            }catch(Exception e) {
+                return false;
+            }
+            return true;
+        }
+        throw new IllegalArgumentException( "driver 与 pElement 不能同时为空"+this);
     }
 
     /**
@@ -803,7 +726,8 @@ public class Element {
                 ", pElement=" + pElement +
                 ", iframe=" + iframe +
                 ", description='" + description + '\'' +
-                ", by=" + by +
+                ", findType='" + findType + '\'' +
+                ", selector='" + selector + '\'' +
                 ", index=" + index +
                 ", signForOperate=" + signForOperate +
                 '}';
