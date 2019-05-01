@@ -1,6 +1,4 @@
 # java自动化测试工具包介绍
-javadoc地址：[http://docs.jaque.top]  
-git地址：[https://github.com/jaqueliao/testUtils]  
 ---
 &nbsp;&nbsp;&nbsp;&nbsp;最开始做自动化的时候自己封装了一些工具类，把一些元素、driver的操作做了封装，所以就把这个项目叫做testUtils（测试工具）
 。  
@@ -83,3 +81,6 @@ public class ElementTest {
     }
 }
 ```
+  
+javadoc地址：[http://docs.jaque.top]  
+git地址：[https://github.com/jaqueliao/testUtils]  
