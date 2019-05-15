@@ -72,7 +72,7 @@ public class Assertion {
         Assertion assertion = new Assertion();
         assertMap.put(getTestName(),assertion);
         assertion.flag = true;
-        return null;
+        return assertion;
     }
 
     //仅供测试用
@@ -83,7 +83,7 @@ public class Assertion {
             e.printStackTrace();
             getTestAssertion().flag = false;
         }
-        return null;
+        return getTestAssertion();
     }
 
     /**
@@ -127,7 +127,7 @@ public class Assertion {
             e.printStackTrace();
             getTestAssertion().flag = false;
         }
-        return null;
+        return getTestAssertion();
     }
 
     /**
@@ -143,7 +143,7 @@ public class Assertion {
             e.printStackTrace();
             getTestAssertion().flag = false;
         }
-        return null;
+        return getTestAssertion();
     }
     /**
      * 断言值为假false
@@ -158,7 +158,7 @@ public class Assertion {
             e.printStackTrace();
             getTestAssertion().flag = false;
         }
-        return null;
+        return getTestAssertion();
     }
 
     /**
@@ -247,8 +247,7 @@ public class Assertion {
      * @return 返回空，链式调用
      */
     public static Assertion assertValueContainStr(WebElement element,String str){
-        assertContainStr(element.getAttribute("value"), str,"断言元素："+element+"的value值包含："+str);
-        return null;
+        return assertContainStr(element.getAttribute("value"), str,"断言元素："+element+"的value值包含："+str);
     }
 
     /**
@@ -289,8 +288,7 @@ public class Assertion {
      * @return 返回空，链式调用
      */
     public static Assertion assertTextContainStr(WebElement element,String str){
-        assertContainStr(element.getText(), str,"断言元素："+element+"的text值包含："+str);
-        return null;
+        return assertContainStr(element.getText(), str,"断言元素："+element+"的text值:"+element.getText()+"包含："+str);
     }
 
     /**

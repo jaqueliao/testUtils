@@ -237,8 +237,8 @@ public class Element {
      * @return 返回Element对象本身，可以链式操作
      */
     public Element switchToFrame(){
-        if(null != iframe) {
-            this.driver.switchTo().frame(iframe.getElement());
+        if(null != this.iframe) {
+            this.driver.switchTo().frame(this.iframe.switchToFrame().getElement());
         }else{
             //System.out.println("未设置iframe，不作切换");
         }
