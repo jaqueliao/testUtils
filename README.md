@@ -97,3 +97,26 @@ public class ElementTest {
   
 javadoc地址：[http://docs.jaque.top]  
 git地址：[https://github.com/jaqueliao/testUtils]  
+
+### 2019-05-16
+增加用例失败自动重试功能，需要在xml文件中添加失败重试监听：
+```xml
+    <listener class-name="com.jaque.listener.RetryListener"/>
+```
+完整testng.xml文件示例：
+```xml
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="MyTest" parallel="false">
+	<listeners>
+		<listener class-name="org.uncommons.reportng.HTMLReporter" />
+		<listener class-name="org.uncommons.reportng.JUnitXMLReporter" />
+		<listener class-name="com.jaque.listener.MyTestngListener" />
+		<listener class-name="com.jaque.listener.RetryListener"/>
+	</listeners>
+	<test name="测试名称">
+	<classes>
+		<class name="com.my.cases.Testcases" />
+	</classes>
+	</test>
+</suite>
+```
