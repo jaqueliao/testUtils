@@ -25,10 +25,8 @@ import java.util.Map;
  */
 public class Assertion {
 
-    //适配多用例同时调用，为每个用例生成Assertion实例
-    private static Map<String, Assertion> assertMap = new HashMap<String, Assertion>();
-
-    private boolean flag=true;
+    //适配多用例同时调用，为每个用例生成一个标识用例状态的flag
+    private static Map<String, Boolean> flagMap = new HashMap<>();
 
     /**
      * 获取测试用例方法名
@@ -49,41 +47,23 @@ public class Assertion {
     }
 
     /**
-     * 获取对应用例的断言实例
-     * @return 对应用例的断言实例
-     */
-    private static Assertion getTestAssertion(){
-        String testName = getTestName();
-        //System.out.println("getTestAssertion:"+testName);
-        Assertion assertion = assertMap.get(testName);
-        if(null == assertion){
-            assertion = new Assertion();
-            assertMap.put(testName,assertion);
-            assertion.flag = true;
-        }
-        return assertion;
-    }
-
-    /**
      * 用例开始，初始化此用例的断言实例
      * @return 返回空，链式调用
      */
     public static Assertion start(){
-        Assertion assertion = new Assertion();
-        assertMap.put(getTestName(),assertion);
-        assertion.flag = true;
-        return assertion;
+        flagMap.put(getTestName(),true);
+        return null;
     }
 
     //仅供测试用
     public static Assertion forTest(){
         try{
-            Assert.assertTrue(true);
+            Assert.assertTrue(false);
         }catch (Error e) {
             e.printStackTrace();
-            getTestAssertion().flag = false;
+            flagMap.put(getTestName(),false);
         }
-        return getTestAssertion();
+        return null;
     }
 
     /**
@@ -91,15 +71,13 @@ public class Assertion {
      */
     public static void end(){
         //System.out.print(getTestAssertion().flag);
-        try{
-            if(!getTestAssertion().flag){
+        Boolean flag = flagMap.get(getTestName());
+        if (null != flag) {
+            if (!flag){
+                flagMap.remove(getTestName());
                 Assert.fail("用例失败！");
             }
-        }finally {
-            //System.out.print(assertMap);
-            assertMap.remove(getTestName());
         }
-
     }
 
     /**
@@ -109,7 +87,7 @@ public class Assertion {
      * @param message 附带信息
      * @return 返回空，链式调用
      */
-    public static Assertion assertContainStr(String actual,String expected, String message){
+    public static Assertion assertContainStr(String actual, String expected, String message){
         return assertTrue(actual.contains(expected),message);
     }
 
@@ -125,9 +103,9 @@ public class Assertion {
             Assert.assertEquals(actual, expected, message);
         }catch (Error e) {
             e.printStackTrace();
-            getTestAssertion().flag = false;
+            flagMap.put(getTestName(),false);
         }
-        return getTestAssertion();
+        return null;
     }
 
     /**
@@ -141,9 +119,9 @@ public class Assertion {
             Assert.assertTrue(actual, message);
         }catch (Error e) {
             e.printStackTrace();
-            getTestAssertion().flag = false;
+            flagMap.put(getTestName(),false);
         }
-        return getTestAssertion();
+        return null;
     }
     /**
      * 断言值为假false
@@ -156,9 +134,9 @@ public class Assertion {
             Assert.assertFalse(actual, message);
         }catch (Error e) {
             e.printStackTrace();
-            getTestAssertion().flag = false;
+            flagMap.put(getTestName(),false);
         }
-        return getTestAssertion();
+        return null;
     }
 
     /**
