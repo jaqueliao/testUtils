@@ -289,7 +289,26 @@ public class Assertion {
         return assertTextContainStr(element.getElement(),str);
     }
 
+    /**
+     * 断言元素包含class
+     * @param element 元素
+     * @param className className
+     * @return 返回空，链式调用
+     */
+    public static Assertion assertHasClass(WebElement element, String className) {
+        return assertAttribute(element, "class", className);
+    }
 
+    /**
+     *
+     * @param element 元素
+     * @param name 属性名
+     * @param attribute 属性值
+     * @return 返回空，链式调用
+     */
+    public static Assertion assertAttribute(WebElement element, String name, String attribute) {
+        return assertEquals(element.getAttribute(name), attribute, "断言元素："+element+"的"+ name +"属性值为:"+ attribute);
+    }
     /**
      * TODO
      * 待实现的assert

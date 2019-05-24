@@ -1,5 +1,6 @@
 package com.jaque;
 
+import com.jaque.testUtils.ElementUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
@@ -281,6 +282,16 @@ public class Element {
      */
     public Element click(){
         this.switchToFrame().getElement().click();
+        return this.switchToDefault();
+    }
+
+    /**
+     * 使浏览器滚动到此元素的位置然后再点击此元素
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element scrollToThenClick(){
+        this.switchToFrame();
+        ElementUtils.scrollToElementAndClick(this.driver,this.getElement());
         return this.switchToDefault();
     }
 

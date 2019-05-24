@@ -168,6 +168,7 @@ public class DriverFactory {
 	private void initChrome() {
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--disable-infobars");
+		options.addArguments("--disable-gpu");
 		if(!showImageFlag) {
 			Map<String, Object> prefs = new HashMap<String, Object>();
 			prefs.put("profile.managed_default_content_settings.images", 2);
