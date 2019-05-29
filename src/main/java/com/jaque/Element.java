@@ -1,5 +1,6 @@
 package com.jaque;
 
+import com.jaque.testUtils.DriverUtils;
 import com.jaque.testUtils.ElementUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -26,7 +27,6 @@ public class Element {
     private String findType; //查找元素的方式
     private String selector; //元素定位字符串
     private int index = 0;//若选择器可找到多个元素，此处表示第几个
-    private boolean signForOperate = false;//操作元素时是否标志，给元素加红色边框
 
     public Element() {}
     public Element(WebDriver driver) {
@@ -83,13 +83,11 @@ public class Element {
     }
 
     /**
-     * 操作元素时是否标志，给元素加红色边框
-     * @param signForOperate 是否添加
+     * 给元素加红色边框
      * @return 返回Element对象本身，可以链式设置属性
      */
-    public Element sign(boolean signForOperate){
-        // TODO 待增加添加边框操作
-        this.signForOperate = signForOperate;
+    public Element sign(){
+        ((JavascriptExecutor) driver).executeScript("arguments[0].style.border=\"2px solid red\"", getElement());
         return this;
     }
 
@@ -281,6 +279,7 @@ public class Element {
      * @return 返回Element对象本身，可以链式操作
      */
     public Element click(){
+        DriverUtils.log("点击元素：" + this.description);
         this.switchToFrame().getElement().click();
         return this.switchToDefault();
     }
@@ -291,6 +290,7 @@ public class Element {
      */
     public Element scrollToThenClick(){
         this.switchToFrame();
+        DriverUtils.log("页面滚动到元素位置后点击元素：" + this.description);
         ElementUtils.scrollToElementAndClick(this.driver,this.getElement());
         return this.switchToDefault();
     }
@@ -717,17 +717,18 @@ public class Element {
      * 断言 元素包含文本
      * @param s 文本
      */
-    public void assert_hasText(String s) {
+    public Element assert_hasText(String s) {
         assertTrue(getText().contains(s) ||getContent().contains(s) || getValue().contains(s) );
-
+        return this;
     }
 
     /**
      * 断言 元素内文本与期望值相等
      * @param s 文本
      */
-    public void assert_equalsText(String s) {
+    public Element assert_equalsText(String s) {
         assertEquals(getText(),s);
+        return this;
     }
 
     @Override
@@ -740,7 +741,6 @@ public class Element {
                 ", findType='" + findType + '\'' +
                 ", selector='" + selector + '\'' +
                 ", index=" + index +
-                ", signForOperate=" + signForOperate +
                 '}';
     }
 }

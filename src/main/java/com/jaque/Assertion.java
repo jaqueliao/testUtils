@@ -296,11 +296,11 @@ public class Assertion {
      * @return 返回空，链式调用
      */
     public static Assertion assertHasClass(WebElement element, String className) {
-        return assertAttribute(element, "class", className);
+        return assertAttributeContainStr(element, "class", className);
     }
 
     /**
-     *
+     * 断言元素的属性值
      * @param element 元素
      * @param name 属性名
      * @param attribute 属性值
@@ -308,6 +308,17 @@ public class Assertion {
      */
     public static Assertion assertAttribute(WebElement element, String name, String attribute) {
         return assertEquals(element.getAttribute(name), attribute, "断言元素："+element+"的"+ name +"属性值为:"+ attribute);
+    }
+
+    /**
+     * 断言元素的属性值包含某个字符串
+     * @param element 元素
+     * @param name 属性名
+     * @param attribute 包含的属性值
+     * @return 返回空，链式调用
+     */
+    public static Assertion assertAttributeContainStr(WebElement element, String name, String attribute) {
+        return assertTrue(element.getAttribute(name).contains(attribute) , "断言元素："+element+"的"+ name +"属性值包含:"+ attribute);
     }
     /**
      * TODO
