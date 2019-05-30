@@ -1,5 +1,6 @@
 package com.jaque.listener;
 
+import com.jaque.testUtils.DriverUtils;
 import com.jaque.testUtils.TestUtils;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
@@ -20,10 +21,10 @@ public class MyTestngListener implements ITestListener {
 		try {
 			if (TestUtils.isTestServer()) {
 				TestUtils.takeScreenSnap(TestUtils.getJenkinsHome()+"\\webapps\\testOutput\\img\\" + fileName + ".png");
-				Reporter.log("<img class='pimg' src='/testOutput/img/" + fileName + ".png' width='100'/>");
+				DriverUtils.log("<img class='pimg' src='/testOutput/img/" + fileName + ".png' width='100'/>");
 			} else {
 				TestUtils.takeScreenSnap("test-output/img/" + fileName + ".png");
-				Reporter.log("<img class='pimg' src='../img/" + fileName + ".png' width='100'/>");
+				DriverUtils.log("<img class='pimg' src='../img/" + fileName + ".png' width='100'/>");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

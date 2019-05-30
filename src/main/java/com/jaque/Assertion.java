@@ -1,9 +1,13 @@
 package com.jaque;
 
+import com.jaque.testUtils.DriverUtils;
+import com.jaque.testUtils.TestUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,6 +96,37 @@ public class Assertion {
     }
 
     /**
+     * 获取异常或错误的详细stack
+     * @param t t
+     * @return
+     */
+    private static String getTrace(Throwable t) {
+        StringWriter stringWriter= new StringWriter();
+        PrintWriter writer= new PrintWriter(stringWriter);
+        t.printStackTrace(writer);
+        StringBuffer buffer= stringWriter.getBuffer();
+        return buffer.toString();
+    }
+
+    /**
+     * 用例失败状态时截图保存
+     */
+    private static void saveFaileState() {
+        String fileName = "failTest" + TestUtils.getTimeStamp();
+        try {
+            if (TestUtils.isTestServer()) {
+                TestUtils.takeScreenSnap(TestUtils.getJenkinsHome()+"\\webapps\\testOutput\\img\\" + fileName + ".png");
+                DriverUtils.log("<img class='pimg' src='/testOutput/img/" + fileName + ".png' width='100'/>");
+            } else {
+                TestUtils.takeScreenSnap("test-output/img/" + fileName + ".png");
+                DriverUtils.log("<img class='pimg' src='../img/" + fileName + ".png' width='100'/>");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 断言字符串相等
      * @param actual 实际值
      * @param expected 期望值
@@ -102,8 +137,10 @@ public class Assertion {
         try{
             Assert.assertEquals(actual, expected, message);
         }catch (Error e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            DriverUtils.log(getTrace(e));
             flagMap.put(getTestName(),false);
+            saveFaileState();
         }
         return null;
     }
@@ -118,8 +155,9 @@ public class Assertion {
         try{
             Assert.assertTrue(actual, message);
         }catch (Error e) {
-            e.printStackTrace();
+            DriverUtils.log(getTrace(e));
             flagMap.put(getTestName(),false);
+            saveFaileState();
         }
         return null;
     }
@@ -133,8 +171,9 @@ public class Assertion {
         try{
             Assert.assertFalse(actual, message);
         }catch (Error e) {
-            e.printStackTrace();
+            DriverUtils.log(getTrace(e));
             flagMap.put(getTestName(),false);
+            saveFaileState();
         }
         return null;
     }
