@@ -5,7 +5,6 @@ import com.jaque.testUtils.TestUtils;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
-import org.testng.Reporter;
 
 import java.util.*;
 
@@ -37,19 +36,20 @@ public class MyTestngListener implements ITestListener {
 	 */
 	@Override
 	public void onFinish(ITestContext testContext) {
-
+//由于testng升级，重试前的用例都归入了skip，此方法并不能删除重试多余的用例，而且并不是很需要这个功能，故注释掉
+/*
 		// List of test results which we will delete later
 		ArrayList<ITestResult> testsToBeRemoved = new ArrayList<ITestResult>();
 		// collect all id's from passed test
 		Set<Integer> passedTestIds = new HashSet<Integer>();
 		for (ITestResult passedTest : testContext.getPassedTests().getAllResults()) {
-			Reporter.log("PassedTests = " + passedTest.getName());
+			DriverUtils.log("PassedTests = " + passedTest.getName());
 			passedTestIds.add(getId(passedTest));
 		}
 
 		Set<Integer> failedTestIds = new HashSet<Integer>();
 		for (ITestResult failedTest : testContext.getFailedTests().getAllResults()) {
-			Reporter.log("failedTest = " + failedTest.getName());
+			DriverUtils.log("failedTest = " + failedTest.getName());
 			// id = class + method + dataprovider
 			int failedTestId = getId(failedTest);
 
@@ -69,11 +69,11 @@ public class MyTestngListener implements ITestListener {
 				.hasNext();) {
 			ITestResult testResult = iterator.next();
 			if (testsToBeRemoved.contains(testResult)) {
-				Reporter.log("Remove repeat Fail Test: " + testResult.getName());
+				DriverUtils.log("Remove repeat Fail Test: " + testResult.getName());
 				iterator.remove();
 			}
 		}
-
+*/
 	}
 
 	private int getId(ITestResult result) {
