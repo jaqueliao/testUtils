@@ -9,7 +9,9 @@ import org.testng.Assert;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 封装此类是由于在一个Test中，可能会有多次assert的动作，但是只要第
@@ -31,6 +33,15 @@ public class Assertion {
 
     //适配多用例同时调用，为每个用例生成一个标识用例状态的flag
     private static Map<String, Boolean> flagMap = new HashMap<>();
+    private static Set<String> extraClassNames = new HashSet<>();
+    static{
+        //System.out.println("类名："+Assertion.class.getName());
+        extraClassNames.add(Assertion.class.getName());
+    }
+
+    public static void addExtraClass(String className){
+        extraClassNames.add(className);
+    }
 
     /**
      * 获取测试用例方法名
@@ -39,8 +50,11 @@ public class Assertion {
     private static String getTestName(){
         String testName = "";
         StackTraceElement[] stacks = (new Throwable()).getStackTrace();
+/*        for(StackTraceElement stack :stacks) {
+            System.out.println("方法："+stack.getClassName()+"-"+stack.getMethodName());
+        }*/
         for(StackTraceElement stack :stacks){
-            if("com.jaque.Assertion".equals(stack.getClassName())){
+            if(extraClassNames.contains(stack.getClassName())){
                 continue;
             }
             testName = stack.getClassName() + "-" + stack.getMethodName();

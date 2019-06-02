@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 /**
  * 元素包装类，为元素添加了定位、操作及断言等封装
@@ -27,6 +26,9 @@ public class Element {
     private String findType; //查找元素的方式
     private String selector; //元素定位字符串
     private int index = 0;//若选择器可找到多个元素，此处表示第几个
+    static{
+        Assertion.addExtraClass(Element.class.getName());
+    }
 
     public Element() {}
     public Element(WebDriver driver) {
@@ -718,7 +720,8 @@ public class Element {
      * @param s 文本
      */
     public Element assert_hasText(String s) {
-        assertTrue(getText().contains(s) ||getContent().contains(s) || getValue().contains(s) );
+        Assertion.assertTextContainStr(this,s);
+        //assertTrue(getText().contains(s) ||getContent().contains(s) || getValue().contains(s) );
         return this;
     }
 
