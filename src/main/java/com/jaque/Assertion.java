@@ -5,13 +5,14 @@ import com.jaque.testUtils.TestUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 封装此类是由于在一个Test中，可能会有多次assert的动作，但是只要第
@@ -33,18 +34,8 @@ public class Assertion {
 
     //适配多用例同时调用，为每个用例生成一个标识用例状态的flag
     private static Map<String, Boolean> flagMap = new HashMap<>();
-    private static Set<String> extraClassNames = new HashSet<>();
-    static{
-        //System.out.println("类名："+Assertion.class.getName());
-        extraClassNames.add(Assertion.class.getName());
-    }
-
-    public static void addExtraClass(String className){
-        extraClassNames.add(className);
-    }
-
     /**
-     * 获取测试用例方法名
+     * 获取测试用例方法名,通过反射验证方法是否有 TestNg 的 @Test 注解，有的化则断定为测试用例，否则继续检测
      * @return 测试用例方法名
      */
     private static String getTestName(){
@@ -54,11 +45,20 @@ public class Assertion {
             System.out.println("方法："+stack.getClassName()+"-"+stack.getMethodName());
         }*/
         for(StackTraceElement stack :stacks){
-            if(extraClassNames.contains(stack.getClassName())){
-                continue;
+            try{
+                Class c = Class.forName(stack.getClassName());
+                Method method = c.getDeclaredMethod(stack.getMethodName());
+                Annotation[] annotations = method.getAnnotations();
+                if (method.isAnnotationPresent(Test.class)) {
+                    /*for (Annotation annotation : annotations) {
+                        System.out.println("注解："+annotation);
+                    }*/
+                    testName = stack.getClassName() + "-" + stack.getMethodName();
+                    break;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
-            testName = stack.getClassName() + "-" + stack.getMethodName();
-            break;
         }
         //System.out.println("getTestName:"+testName);
         return testName;
@@ -76,7 +76,7 @@ public class Assertion {
     //仅供测试用
     public static Assertion forTest(){
         try{
-            Assert.assertTrue(false);
+            Assert.assertTrue(true);
         }catch (Error e) {
             e.printStackTrace();
             flagMap.put(getTestName(),false);

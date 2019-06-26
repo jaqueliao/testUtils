@@ -26,9 +26,6 @@ public class Element {
     private String findType; //查找元素的方式
     private String selector; //元素定位字符串
     private int index = 0;//若选择器可找到多个元素，此处表示第几个
-    static{
-        Assertion.addExtraClass(Element.class.getName());
-    }
 
     public Element() {}
     public Element(WebDriver driver) {
