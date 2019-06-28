@@ -57,7 +57,7 @@ public class Assertion {
                     break;
                 }
             }catch (Exception e){
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
         //System.out.println("getTestName:"+testName);
@@ -352,6 +352,15 @@ public class Assertion {
         return assertAttributeContainStr(element, "class", className);
     }
 
+    /**
+     * 断言元素包含class
+     * @param element 元素
+     * @param className className
+     * @return 返回空，链式调用
+     */
+    public static Assertion assertHasClass(Element element, String className) {
+        return assertAttributeContainStr(element.getElement(), "class", className);
+    }
     /**
      * 断言元素的属性值
      * @param element 元素

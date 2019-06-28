@@ -9,8 +9,6 @@ import org.openqa.selenium.support.ui.Select;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-
 /**
  * 元素包装类，为元素添加了定位、操作及断言等封装
  * @CreateDate 2019-04-29 09:00:00
@@ -727,9 +725,26 @@ public class Element {
      * @param s 文本
      */
     public Element assert_equalsText(String s) {
-        assertEquals(getText(),s);
+        Assertion.assertText(this,s);
         return this;
     }
+
+    /**
+     * 断言元素显示
+     */
+    public Element assert_displayed(){
+        Assertion.assertTrue(this.isDisplayed(),"断言元素"+this.description+"显示");
+        return this;
+    }
+
+    /**
+     * 断言元素不显示
+     */
+    public Element assert_notDisplayed(){
+        Assertion.assertFalse(this.isDisplayed(),"断言元素"+this.description+"不显示");
+        return this;
+    }
+
 
     @Override
     public String toString() {

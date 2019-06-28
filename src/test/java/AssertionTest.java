@@ -9,7 +9,7 @@ public class AssertionTest {
 
     @Test
     public void test1(){
-        Assertion.forTest();
+        Assertion.start().forTest();
         Assertion.end();
     }
     @Test
