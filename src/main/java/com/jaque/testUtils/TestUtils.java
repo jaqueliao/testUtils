@@ -54,7 +54,7 @@ public class TestUtils {
 	    return sb.toString();
 	}
 	/**
-	 * 根据日期生成手机号，避免重复
+	 * 根据日期生成手机号，避免重复,取 188+年的最后一位+月2位+日2位+毫秒3位
 	 * @return	返回手机号
 	 */
 	public static String getPhoneOfToday() {
