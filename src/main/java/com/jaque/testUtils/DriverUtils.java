@@ -20,8 +20,8 @@ public class DriverUtils {
 
 
 	public static void main(String[] args){
-		String initurl = "https://ykttest.zytest.net/groupPurchasing?groupPurchasingId=840457600439943168&orderId=8404576060938649600&charset=UTF-8&out_trade_no=o1der7g6h4TwiPSrm45-_9eqb6AH1EDX&method=alipay.trade.wap.pay.return&total_amount=0.01&sign=Ia7cZJen1UA52zxNYunjJelddspEG1NF5cshkGHgHupCYG05RTNMnVMcRtUKQ%2BZkz3WOGe59%2BTMJMhBz3bdsjBL8%2FTOIQgD7I8eJdtj6BHbRZDK3I1OjShHPRoqA9TVlx%2FxGdNYiy%2BOu7y1NiqQIAXAxRKsQpsmUH8wd9ej5uyA%3D&trade_no=2019070322001468601055709440&auth_app_id=2017041206660636&version=1.0&app_id=2017041206660636&sign_type=RSA&seller_id=2088511697432208&timestamp=2019-07-03%2014%3A14%3A42";
-		System.out.println(getPara(initurl,"groupPurchasingId"));
+		String initurl = "https://pre-m-ots.zy.com/report?examId=5f0bcf5d-ac8c-4d7c-a7f2-b0b775cf022f&examStartTime=2019-07-03%2015%3A12%3A28.415&examinee=%7B%27examineeId%27%3Anull%2C%27memberid%27%3A%274FBDC50A-ECCA-42F2-BDEA-27940E4924E2%27%2C%27parentMemberId%27%3A%277DD38C22-A13E-446B-920B-78B2773B59FB%27%2C%27ppid%27%3Anull%2C%27resultUrl%27%3Anull%2C%27studentNo%27%3Anull%2C%27systemType%27%3A%279527%27%2C%27targetClassId%27%3Anull%7D&subjectId=9&gradationId=null&classId=386393";
+		System.out.println(getPara(initurl,"examStartTime"));
 	}
 	/**
 	 * 返回解码后的url文本
