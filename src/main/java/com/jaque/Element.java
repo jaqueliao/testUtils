@@ -282,6 +282,21 @@ public class Element {
     }
 
     /**
+     * 按百分比位置点击元素的某个地方，例如元素大小为（200，300），xPercent=20，yPercent=60，则会点击此元素的（40，180）位置
+     * @param xPercent 元素宽度百分比坐标，取值（0-100）
+     * @param yPercent 元素高度百分比坐标，取值（0-100）
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element click(int xPercent, int yPercent){
+        Actions actions = new Actions(this.driver);
+        this.switchToFrame();
+        int x = getElement().getSize().width * xPercent / 100;
+        int y = getElement().getSize().height * yPercent / 100;
+        actions.moveToElement(getElement(), x, y).click().perform();
+        return this.switchToDefault();
+    }
+
+    /**
      * 使浏览器滚动到此元素的位置然后再点击此元素
      * @return 返回Element对象本身，可以链式操作
      */
@@ -289,17 +304,6 @@ public class Element {
         this.switchToFrame();
         DriverUtils.log("页面滚动到元素位置后点击元素：" + this.description);
         ElementUtils.scrollToElementAndClick(this.driver,this.getElement());
-        return this.switchToDefault();
-    }
-
-    /**
-     * 移动到元素中间然后点击，当元素是不可点击时，但要点击此元素所在的位置时可使用
-     * @return 返回Element对象本身，可以链式操作
-     */
-    public Element moveToElementThenclick(){
-        Actions actions = new Actions(this.driver);
-        this.switchToFrame();
-        actions.moveToElement(getElement()).click().perform();
         return this.switchToDefault();
     }
 
