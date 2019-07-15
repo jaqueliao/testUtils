@@ -70,5 +70,7 @@
     <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context-support:4.2.5.RELEASE" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.slf4j:jcl-over-slf4j:1.7.19" level="project" />
+    <orderEntry type="library" name="Maven: com.google.zxing:javase:3.2.1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.zxing:core:3.3.3" level="project" />
   </component>
 </module>

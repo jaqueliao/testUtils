@@ -24,4 +24,12 @@ public class PageTempTest extends PageTemp {
     public Element getSearch_btn() {
         return ele.id("su").describe("百度一下按钮");
     }
+
+    public Element a1 = new Element().id("a1").describe("a1内容");
+    public Element mainIframe = new Element().id("main").describe("第一个iframe");
+    public Element b1 = new Element().iframe(mainIframe).id("b1").describe("b1内容");
+    public Element testIframe = new Element().iframe(mainIframe).id("testIframe").describe("第二个iframe");
+    public Element textdiv = new Element().iframe(testIframe).css("body > div:nth-child(2)").describe("文本");
+
+
 }

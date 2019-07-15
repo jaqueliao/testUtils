@@ -74,4 +74,12 @@ public class ElementTest {
         Assertion.assertTitle(driver,"自动化_百度搜索").assertUrlContainStr(driver,"https://www.baidu.com/s").end();
     }
 
+    @Test(priority = 4, description = "多层嵌套iframe测试")
+    public void iframeTest(){
+        driver.get("file:///C:/Users/Administrator/Desktop/iframetest/A%E9%A1%B5%E9%9D%A2.html");
+        System.out.println(ptt.textdiv.getText());
+        System.out.println(ptt.a1.getText());
+        System.out.println(ptt.b1.getText());
+    }
+
 }

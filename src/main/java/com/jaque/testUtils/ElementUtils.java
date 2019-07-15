@@ -26,7 +26,7 @@ public class ElementUtils {
         WrapsDriver wrapsDriver = (WrapsDriver) element;  
         // 截图整个页面  
         File screen = ((TakesScreenshot) wrapsDriver.getWrappedDriver()).getScreenshotAs(OutputType.FILE);  
-       //FileUtils.copyFile(screen, new File("d:\\b.png")); 
+       //FilePathUtils.copyFile(screen, new File("d:\\b.png"));
 
         BufferedImage img = ImageIO.read(screen);  
         // 获得元素的高度和宽度  

@@ -1,14 +1,13 @@
 package com.jaque.testUtils;
 
 import jdk.nashorn.internal.runtime.regexp.joni.exception.ValueException;
-import org.openqa.selenium.TimeoutException;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class FileUtils {
+public class FilePathUtils {
     public static File getRandomFile(String pathStr,String ext){
         File path = new File(pathStr);
         if(!path.isDirectory()){

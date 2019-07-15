@@ -81,7 +81,7 @@ public class DriverUtils {
     public static File captureBrowser(WebDriver driver){
         // 截图整个网页  
         File screen = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);  
-        //FileUtils.copyFile(screen, new File("d:\\b.png")); 
+        //FilePathUtils.copyFile(screen, new File("d:\\b.png"));
         return screen;  
     } 
     /**
