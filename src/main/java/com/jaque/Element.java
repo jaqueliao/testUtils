@@ -71,11 +71,12 @@ public class Element {
 
     /**
      * 设置选取第几个元素
-     * @param index 元素序号
+     * @param index 元素序号,从0开始计算（程序员），更新描述时从1开始（日志给人看）
      * @return 返回Element对象本身，可以链式设置属性
      */
     public Element index(int index){
         this.index = index;
+        this.description = description.replace("【i】", String.format("【%d】", this.index+1));
         return this;
     }
 

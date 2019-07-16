@@ -24,19 +24,20 @@ import java.util.Map;
 public class QRCodeTools {
     /**
      * 解析二维码解析,此方法是解析Base64格式二维码图片
-     * baseStr:base64字符串,data:image/png;base64开头的
+     * @param baseStr base64字符串,data:image/png;base64开头的
+     * @return 二维码识别的文本
      */
     public static String deEncodeByBase64(String baseStr) {
         String content = null;
         BufferedImage image;
         BASE64Decoder decoder = new BASE64Decoder();
-        byte[] b=null;
+        byte[] b = null;
         try {
             int i = baseStr.indexOf("data:image/png;base64,");
-            baseStr = baseStr.substring(i+"data:image/png;base64,".length());//去掉base64图片的data:image/png;base64,部分才能转换为byte[]
+            baseStr = baseStr.substring(i + "data:image/png;base64,".length());//去掉base64图片的data:image/png;base64,部分才能转换为byte[]
 
             b = decoder.decodeBuffer(baseStr);//baseStr转byte[]
-            ByteArrayInputStream byteArrayInputStream=new ByteArrayInputStream(b);//byte[] 转BufferedImage
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(b);//byte[] 转BufferedImage
             image = ImageIO.read(byteArrayInputStream);
             content = getQRString(content, image);
         } catch (IOException | NotFoundException e) {
@@ -47,7 +48,8 @@ public class QRCodeTools {
 
     /**
      * 解析二维码,此方法解析一个路径的二维码图片
-     * path:图片路径
+     * @param path 图片路径
+     * @return 二维码识别的文本
      */
     public static String deEncodeByPath(String path) {
         String content = null;
@@ -64,6 +66,7 @@ public class QRCodeTools {
     /**
      * 从Url解析二维码
      * @param url 图片网址
+     * @return 二维码识别的文本
      */
     public static String deEncodeByUrl(String url) {
         String content = null;
@@ -79,7 +82,9 @@ public class QRCodeTools {
 
     /**
      * 从WebElement中解析二维码
+     *
      * @param webElement Selenium的WebElement元素
+     * @return 二维码识别的文本
      */
     public static String deEncodeByWebElement(WebElement webElement) {
         WrapsDriver wrapsDriver = (WrapsDriver) webElement;
@@ -97,7 +102,9 @@ public class QRCodeTools {
 
     /**
      * 直接网页截图识别二维码
+     *
      * @param webDriver WebDriver
+     * @return 二维码识别的文本
      */
     public static String deEncodeByWebDriver(WebDriver webDriver) {
         File screen = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
@@ -114,7 +121,9 @@ public class QRCodeTools {
 
     /**
      * 从Element中解析二维码
+     *
      * @param element 自己封装的Element元素
+     * @return 二维码识别的文本
      */
     public static String deEncodeByElement(Element element) {
         return deEncodeByWebElement(element.getElement());
@@ -134,7 +143,7 @@ public class QRCodeTools {
     }
 
     public static void main(String[] args) {
-        System.out.println( deEncodeByUrl("https://dianbo.zycourse.com/gp_defult_code.jpg"));
+        System.out.println(deEncodeByUrl("https://dianbo.zycourse.com/gp_defult_code.jpg"));
         System.out.println(deEncodeByUrl("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=gQFq7zwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyQ2NWU0ZmT1hjSGoxN19fUnh0YzEAAgR-RSxdAwSAOgkA"));
     }
 }
