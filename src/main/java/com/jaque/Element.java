@@ -1,5 +1,4 @@
 package com.jaque;
-
 import com.jaque.testUtils.DriverUtils;
 import com.jaque.testUtils.ElementUtils;
 import org.openqa.selenium.*;
@@ -8,6 +7,8 @@ import org.openqa.selenium.support.ui.Select;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 元素包装类，为元素添加了定位、操作及断言等封装
@@ -19,12 +20,12 @@ public class Element {
     private WebDriver driver;//浏览器驱动
     private Element pElement;//父元素，pElement与driver必须设置一个
     private Element iframe;//设置之后本元素表示在此iframe内，会通过此iframe找寻元素
-    private String description;//元素描述文本
+    private String description="";//元素描述文本
     private By by; //选择器
     private String findType; //查找元素的方式
     private String selector; //元素定位字符串
     private int index = 0;//若选择器可找到多个元素，此处表示第几个
-
+    private String indexDesc="";
     public Element() {}
     public Element(WebDriver driver) {
         this.driver = driver;
@@ -51,6 +52,19 @@ public class Element {
     }
 
     /**
+     * 设置父元素的index值
+     * @param Pindex 父元素需要设置的的index值
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element pElement(int Pindex){
+        if(null == this.pElement){
+            throw new IllegalArgumentException( "设置父元素 index 时 pElement 不能为空:"+this);
+        }
+        this.pElement.index = Pindex;
+        return this;
+    }
+
+    /**
      * 设置iframe，若设置之后，切换到此iframe后再查询元素
      * @param iframe iframe
      * @return 返回Element对象本身，可以链式设置属性
@@ -66,6 +80,12 @@ public class Element {
      */
     public Element describe(String description){
         this.description = description;
+        String pattern = "【(.*)】";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(description);
+        if (m.find( )) {
+            indexDesc = m.group(1);
+        }
         return this;
     }
 
@@ -76,7 +96,15 @@ public class Element {
      */
     public Element index(int index){
         this.index = index;
-        this.description = description.replace("【i】", String.format("【%d】", this.index+1));
+        if(indexDesc.contains(":") || indexDesc.contains("|")){
+            for(String s : indexDesc.split("\\|")){
+                if(s.contains(String.valueOf(index))){
+                    this.description = description.replaceAll("【(.*)】",String.format("【%s】", s.split(":")[1]));
+                }
+            }
+        }else{
+            this.description = description.replaceAll("【(.*)】",String.format("【%d】", this.index+1));
+        }
         return this;
     }
 
@@ -210,26 +238,6 @@ public class Element {
     }
 
     /**
-     * 获取Selenium自带的WebElement类型的元素
-     * @return 返回WebElement
-     */
-    public WebElement getElement(){
-        if(!isPresent()){
-            throw new IllegalArgumentException( "使用设置的定位方式无法定位到元素"+this);
-        }
-        if(length()<=this.index){
-            throw new IllegalArgumentException( "index大于可定为到元素个数："+length()+"，index为："+index);
-        }
-        if(null != this.pElement){
-            return this.pElement.getElement().findElements(by).get(index);
-        }
-        if(null != this.driver){
-            return this.driver.findElements(by).get(index);
-        }
-        return null;
-    }
-
-    /**
      * 切换到iframe内，若未设置iframe则不切换
      * @return 返回Element对象本身，可以链式操作
      */
@@ -252,7 +260,57 @@ public class Element {
     }
 
     /**
-     * 获取当前设置的选择器可找打的所有Selenium自带的WebElement类型的元素
+     * 获取Selenium自带的WebElement类型的元素
+     * @return 返回WebElement
+     */
+    public WebElement getElement(){
+        if(!isPresent()){
+            throw new IllegalArgumentException( "使用设置的定位方式无法定位到元素"+this);
+        }
+        if(length()<=this.index){
+            throw new IllegalArgumentException( "index大于可定为到元素个数："+length()+"，index为："+index);
+        }
+        if(null != this.pElement){
+            return this.pElement.getElement().findElements(by).get(index);
+        }
+        if(null != this.driver){
+            return this.driver.findElements(by).get(index);
+        }
+        return null;
+    }
+
+    /**
+     * 获取当前设置的选择器可找到的最后一个元素
+     * @return 最后一个元素
+     */
+    public WebElement getLastElement(){
+        if(length() == 0){
+            return null;
+        }
+        return getAllElements().get(length()-1);
+    }
+
+    /**
+     * 获取最后一个Element
+     */
+    public Element last(){
+        if(length() == 0){
+            return null;
+        }
+        return this.index(length()-1);
+    }
+
+    /**
+     * 获取第一个Element，与index(0)相同
+     */
+    public Element first(){
+        if(length() == 0){
+            return null;
+        }
+        return this.index(0);
+    }
+    /**
+     * 获取当前设置的选择器可找到的所有Selenium自带的WebElement类型的元素
      * @return 返回WebElement的List
      */
     public List<WebElement> getAllElements(){
@@ -293,6 +351,7 @@ public class Element {
         this.switchToFrame();
         int x = getElement().getSize().width * xPercent / 100;
         int y = getElement().getSize().height * yPercent / 100;
+        //System.out.println(getElement().getSize()+","+x+":"+y);
         actions.moveToElement(getElement(), x, y).click().perform();
         return this.switchToDefault();
     }
@@ -442,7 +501,9 @@ public class Element {
     public boolean isDisplayed(){
         boolean isDisplayed;
         this.switchToFrame();
-        isDisplayed = getElement().isDisplayed();
+        if(isDisplayed=isPresent()){//元素存在则判断是否显示，否则为不显示
+            isDisplayed = getElement().isDisplayed();
+        }
         this.switchToDefault();
         return isDisplayed;
     }
@@ -726,6 +787,15 @@ public class Element {
     }
 
     /**
+     *  断言元素不包含文本
+     * @param s 文本
+     */
+    public Element assert_notHasText(String s) {
+        Assertion.assertFalse(this.getElement().getText().contains(s),"断言元素:"+this.description+"内文本不包含："+s);
+        return this;
+    }
+
+    /**
      * 断言 元素内文本与期望值相等
      * @param s 文本
      */
@@ -763,4 +833,6 @@ public class Element {
                 ", index=" + index +
                 '}';
     }
+
+
 }

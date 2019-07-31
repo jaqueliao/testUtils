@@ -82,4 +82,14 @@ public class ElementTest {
         System.out.println(ptt.b1.getText());
     }
 
+    @Test(priority = 4, description = "多层嵌套iframe测试")
+    public void descTest(){
+        Element e = new Element().describe("我的课程上面的【0:已购买的课程|1:会员尊享|2:赠送课程】tab");
+        e.index(2);
+        System.out.println(e);
+        Element e2 = new Element().describe("我的课程上面的第【index】个tab");
+        e2.index(1);
+        System.out.println(e2);
+    }
+
 }
