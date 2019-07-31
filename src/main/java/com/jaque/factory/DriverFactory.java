@@ -1,6 +1,7 @@
 package com.jaque.factory;
 
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -38,6 +39,7 @@ public class DriverFactory {
 	private int globalTimeOut = 0;
 	private int pageLoadTimeOut = 0;
 	private Dimension browserDimension;
+	private Point browserPosition;
 	private int browserWidth;
 	private int browserHeight;
 	private boolean showImageFlag = true;
@@ -246,6 +248,9 @@ public class DriverFactory {
 		if(!(null == browserDimension)) {
 			driver.manage().window().setSize(browserDimension);
 		}
+		if(!(null == browserPosition)) {
+			driver.manage().window().setPosition(browserPosition);
+		}
 		if(!(null == url)) {
 			driver.get(url);
 		}
@@ -323,7 +328,9 @@ public class DriverFactory {
 		Dimension dimension = new Dimension(browserWidth, browserHeight);
 		this.browserDimension = dimension;
 	}
-
+	public void setBrowserPosition(int x,int y) {
+		this.browserPosition = new Point(x, y);
+	}
 	public int getDeviceWidth() {
 		return deviceWidth;
 	}
