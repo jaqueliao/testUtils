@@ -1,9 +1,12 @@
 package com.jaque;
+
 import com.jaque.testUtils.DriverUtils;
 import com.jaque.testUtils.ElementUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -338,6 +341,28 @@ public class Element {
         DriverUtils.log("点击元素：" + this.description);
         this.switchToFrame().getElement().click();
         return this.switchToDefault();
+    }
+
+    /**
+     * 点击后等待页面Url改变
+     * @param waitSeconds 等待秒数
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element clickAndWaitForUrlChange(int waitSeconds){
+        final String url = this.driver.getCurrentUrl();
+        DriverUtils.log("当前页面Url为：" + url);
+        DriverUtils.log("点击元素：" + this.description);
+        this.switchToFrame().getElement().click();
+        this.switchToDefault();
+        WebDriverWait wait=new WebDriverWait(this.driver, waitSeconds);
+        Boolean b = wait.until(new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver d) {
+                return !d.getCurrentUrl().equals(url);
+            }
+        });
+        DriverUtils.log("点击之后页面Url为：" + this.driver.getCurrentUrl());
+        return this;
     }
 
     /**
