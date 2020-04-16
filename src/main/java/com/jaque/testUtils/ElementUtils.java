@@ -4,7 +4,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.WrapsDriver;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
 
@@ -19,8 +19,8 @@ public class ElementUtils {
     /**
      * 页面元素截图，返回File型
      * @param element 元素
-     * @return
-     * @throws IOException 
+     * @return file
+     * @throws IOException io
      */
     public static File captureElement(WebElement element) throws IOException{  
         WrapsDriver wrapsDriver = (WrapsDriver) element;  
@@ -50,7 +50,7 @@ public class ElementUtils {
      * 将元素截图至本地
      * @param element 元素
      * @param file 本地路径
-     * @throws IOException
+     * @throws IOException io
      */
     public static void captureElementToFile(WebElement element,String file) throws IOException {
     	File screen = captureElement(element);
@@ -61,18 +61,18 @@ public class ElementUtils {
      * @param element 元素
      * @param pic 本地图片路径
      * @param similar 相似度
-     * @return
-     * @throws Exception
+     * @return boolean
+     * @throws Exception e
      */
     public static boolean isElementRight(WebElement element,String pic,double similar) throws Exception {
-		return PhotoDigest.getSimRate(captureElement(element), new File(pic)) > similar?true:false; 	
+		return PhotoDigest.getSimRate(captureElement(element), new File(pic)) > similar;
     }    
     /**
      * 将元素与本地图片对比，相似度大于预设值（90）表示元素显示正确，返回true
      * @param element 元素
      * @param pic 本地图片路径
-     * @return
-     * @throws Exception
+     * @return boolean
+     * @throws Exception e
      */
     public static boolean isElementRight(WebElement element,String pic) throws Exception {
 		return isElementRight(element, pic, (double) 90);
@@ -82,8 +82,8 @@ public class ElementUtils {
      * @param element 元素
      * @param pic 本地图片路径
      * @param similar 相似度
-     * @return
-     * @throws Exception
+     * @return boolean
+     * @throws Exception e
      */
     public static boolean isElementRight(WebElement element,String pic,int similar) throws Exception {
 		return isElementRight(element, pic, (double) similar);
@@ -94,10 +94,10 @@ public class ElementUtils {
      * @param element
      */
     public static void scrollToElement(WebDriver driver,WebElement element) {
-		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);  
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: \"center\"});", element);
     }
     public static void scrollToElementAndClick(WebDriver driver,WebElement element) {
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: \"center\"});", element);
         TestUtils.sleep("等待页面滚动完成");
         element.click();
     }

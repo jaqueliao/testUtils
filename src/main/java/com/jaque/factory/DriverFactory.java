@@ -170,6 +170,7 @@ public class DriverFactory {
 	private void initChrome() {
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--disable-infobars");
+		options.addArguments("--enable-automation");
 		options.addArguments("--disable-gpu");
 		if(!showImageFlag) {
 			Map<String, Object> prefs = new HashMap<String, Object>();
