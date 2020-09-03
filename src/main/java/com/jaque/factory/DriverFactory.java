@@ -23,9 +23,11 @@ public class DriverFactory {
 	
 	public static void main(String[] args) throws URISyntaxException {
 		
-		DriverFactory DriverFactory = new DriverFactory("ie",600,800);
+		DriverFactory DriverFactory = new DriverFactory("gc",600,800);
 		DriverFactory.setUrl("http://www.baidu.com");
-		DriverFactory.setDisableImage();
+		DriverFactory.setTimeOut(3,3);
+		//DriverFactory.setDisableImage();
+		DriverFactory.setUserDataDir("%userprofile%\\AppData\\Local\\Google\\Chrome\\autoTest\\");
 		//DriverFactory.setDeviceEmulateOptions(360, 640, 3.0, "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19");
 		DriverFactory.getDriver();
 	}
@@ -46,6 +48,7 @@ public class DriverFactory {
 	private String browser = "";
 	private String driverPath = null;
 	private String url = null;
+	private String userDataDir;
 	/**
 	 * 构造方法，默认使用chrome浏览器，可以使用setBrowser()设置
 	 */
@@ -190,6 +193,9 @@ public class DriverFactory {
 		}
 		if(!(null == driverPath)) {
 			System.setProperty("webdriver.chrome.driver", this.driverPath);
+		}
+		if(!(null == userDataDir)){
+			options.addArguments("--user-data-dir="+userDataDir);
 		}
 		try {
 			driver = new ChromeDriver(options);
@@ -414,5 +420,9 @@ public class DriverFactory {
 	 */
 	public void setDriverPath(String driverPath) {
 		this.driverPath = driverPath;
+	}
+
+	public void setUserDataDir(String userDataDir) {
+		this.userDataDir = userDataDir;
 	}
 }

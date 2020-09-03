@@ -149,11 +149,11 @@ public class CharUtils {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(getFloatFromStr("21.56元"));
-/*		checkCommom(simple_word,firstName_simple);
-		System.out.println(getRandomName_cn(2,false));
-		System.out.println(getRandomName_cn(1,true));
-		System.out.println(getRandomName_cn(2));
-		System.out.println(getRandomName_cn());*/
+		//System.out.println(getFloatFromStr("21.56元"));
+		checkCommom(simple_word,firstName_simple);
+//		System.out.println(getRandomName_cn(2,false));
+//		System.out.println(getRandomName_cn(1,true));
+//		System.out.println(getRandomName_cn(2));
+//		System.out.println(getRandomName_cn());
 	}
 }

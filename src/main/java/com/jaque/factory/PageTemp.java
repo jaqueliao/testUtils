@@ -13,7 +13,7 @@ public class PageTemp {
     }
 
     protected void setDriver() {
-        Field[] field = this.getClass().getDeclaredFields();
+        Field[] field = this.getClass().getFields();
         for(int j=0 ; j<field.length ; j++){ //遍历所有属性
             //String name = field[j].getName(); //获取属性的名字
             //System.out.println("attribute name:"+name);
@@ -24,7 +24,7 @@ public class PageTemp {
                     //System.out.println(this);
                     //System.out.println(field[j].get(this));
                     Element e = (Element) field[j].get(this);
-                    e.driver(driver);
+                    e.driver(this.driver);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }

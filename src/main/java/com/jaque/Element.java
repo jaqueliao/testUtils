@@ -8,7 +8,9 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,7 +20,7 @@ import java.util.regex.Pattern;
  * @CreateDate 2019-04-29 09:00:00
  * @author jaqueliao
  */
-public class Element {
+public class Element{
 
     private WebDriver driver;//浏览器驱动
     private Element pElement;//父元素，pElement与driver必须设置一个
@@ -217,14 +219,27 @@ public class Element {
     }
 
     /**
-     * 根据元素文本定位
+     * 根据元素文本内容定位元素，此操作会将元素的描述替换为此文本内容
      * @param text 元素文本
      * @return 返回Element对象本身，可以链式设置属性
      */
     public Element text(String text){
         this.findType = "text";
         this.selector = text;
-        this.by = By.xpath("//*[text()='"+ text +"']");
+        this.by = By.xpath(".//*[text()='"+ text +"']");
+        this.description = text;
+        return this;
+    }
+    /**
+     * 根据元素文本内容定位元素，此操作会将元素的描述替换为此文本内容
+     * @param text 元素文本
+     * @return 返回Element对象本身，可以链式设置属性
+     */
+    public Element text(String text, Boolean changeDesc){
+        this.findType = "text";
+        this.selector = text;
+        this.by = By.xpath(".//*[text()='"+ text +"']");
+        if(changeDesc)this.description = text;
         return this;
     }
 
@@ -354,14 +369,15 @@ public class Element {
         DriverUtils.log("点击元素：" + this.description);
         this.switchToFrame().getElement().click();
         this.switchToDefault();
-        WebDriverWait wait=new WebDriverWait(this.driver, waitSeconds);
+        WebDriverWait wait=new WebDriverWait(this.driver, waitSeconds,300);
         Boolean b = wait.until(new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver d) {
+                //DriverUtils.log("当前页面Url为：" + d.getCurrentUrl());
                 return !d.getCurrentUrl().equals(url);
             }
         });
-        DriverUtils.log("点击之后页面Url为：" + this.driver.getCurrentUrl());
+        DriverUtils.log("点击之后页面Url为：" + URLDecoder.decode(this.driver.getCurrentUrl()));
         return this;
     }
 
@@ -376,7 +392,7 @@ public class Element {
         this.switchToFrame();
         int x = getElement().getSize().width * xPercent / 100;
         int y = getElement().getSize().height * yPercent / 100;
-        //System.out.println(getElement().getSize()+","+x+":"+y);
+        DriverUtils.log("偏移坐标（"+ x +","+ y +"）后点击元素点击元素：" + this.description);
         actions.moveToElement(getElement(), x, y).click().perform();
         return this.switchToDefault();
     }
@@ -397,9 +413,19 @@ public class Element {
      * @param keysToSend 字符串或者Keys
      * @return 返回Element对象本身，可以链式操作
      */
-    public Element type(CharSequence... keysToSend){
+    public Element sendKeys(CharSequence... keysToSend){
+        DriverUtils.log("元素："+this.description+"，输入内容：" + Arrays.toString(keysToSend));
         this.switchToFrame().getElement().sendKeys(keysToSend);
         return this.switchToDefault();
+    }
+
+    /**
+     * 输入内容
+     * @param keysToSend 字符串或者Keys
+     * @return 返回Element对象本身，可以链式操作
+     */
+    public Element type(CharSequence... keysToSend){
+        return this.sendKeys(keysToSend);
     }
 
     /**
